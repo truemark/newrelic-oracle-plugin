@@ -1,0 +1,6 @@
+[
+  {
+	"id": "TABLESPACE_USAGE",
+	"SQL": "select files.tablespace_name, maxbytes as \"BYTES SIZE\", bytes - free_bytes as \"BYTES USED\", maxbytes - (bytes - free_bytes) as \"BYTES AVAIL\""
+  }
+]

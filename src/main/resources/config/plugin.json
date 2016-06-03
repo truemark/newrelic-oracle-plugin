@@ -1,0 +1,11 @@
+{
+  "agents": [
+	{
+	  "name": "Localhost",
+	  "host": "localhost",
+	  "metrics": "TABLESPACE_USAGE",
+	  "user": "USER_NAME_HERE",
+	  "password": "USER_PASSWD_HERE"
+	}
+  ]
+}
