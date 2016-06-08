@@ -1,0 +1,10 @@
+{
+	"agents": [
+		{
+			"name": "Localhost",
+			"host": "jdbc:oracle:thin:@localhost:1521:xe",
+			"user": "scott",
+			"password": "tiger"
+		}
+	]
+}

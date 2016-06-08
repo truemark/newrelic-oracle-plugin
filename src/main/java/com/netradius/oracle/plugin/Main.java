@@ -1,5 +1,7 @@
-package com.netradius.oraclePlugin;
+package com.netradius.oracle.plugin;
 
+import com.newrelic.agent.deps.org.slf4j.Logger;
+import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Runner;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class Main {
+	private static Logger log = LoggerFactory.getLogger(Main.class);
 	public static void main(String[] args) {
 		try {
 			Runner runner = new Runner();

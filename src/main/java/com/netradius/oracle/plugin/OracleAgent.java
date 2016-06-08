@@ -1,7 +1,12 @@
-package com.netradius.oraclePlugin;
+package com.netradius.oracle.plugin;
 
 
+import com.netradius.oracle.plugin.model.Metric;
+import com.newrelic.agent.deps.org.apache.commons.logging.Log;
+import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Agent;
+import com.newrelic.metrics.publish.util.Logger;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -14,7 +19,10 @@ import java.util.Set;
  * @author Dilip S Sisodia
  */
 @Slf4j
+@Data
 public class OracleAgent extends Agent {
+
+	private static com.newrelic.agent.deps.org.slf4j.Logger log = LoggerFactory.getLogger(OracleAgent.class);
 
 	private static final String GUID = "com.netradius.oracle";
 	private static final String version = "1.0.0";
@@ -22,19 +30,20 @@ public class OracleAgent extends Agent {
 	private final String host;
 	private final String user;
 	private final String password;
-	private Map<String, Object> metricCategories = new HashMap<String, Object>();
+
+	private Map<String, Object> metricCategories = new HashMap<>();
 
 	private DatabaseUtil oracleDB;
 	private Connection connection;
 
-	public OracleAgent(String name, String host, String user, String password, Set<String> metrics, Map<String, Object> metricCategories) {
+	public OracleAgent(String name, String host, String user, String password, Map<String, Object> metricCategories) {
 		super(GUID, version);
 
-		this.name = name; // Set local attributes for new class object
+		this.name = name;
 		this.host = host;
 		this.user = user;
 		this.password = password;
-		this.metricCategories = this.metricCategories;
+		this.metricCategories = metricCategories;
 
 		oracleDB = new DatabaseUtil();
 		connection = DatabaseUtil.getConnection(host, user, password);
@@ -43,18 +52,16 @@ public class OracleAgent extends Agent {
 	@Override
 	public void pollCycle() {
 
-//		Connection c = m.getConnection(host, user, passwd, properties); // Get a database connection (which should be cached)
 		if (connection == null) {
 			connection = DatabaseUtil.getConnection(host, user, password);
 		}
-
 		Map<String, Float> results = gatherMetrics(connection); // Gather defined metrics
 		reportMetrics(results); // Report Metrics to New Relic
 	}
 
 	@Override
-	public String getComponentHumanLabel() {
-		return name;
+	public String getAgentName() {
+		return this.name;
 	}
 
 	private Map<String, Float> gatherMetrics(Connection c) {
@@ -64,9 +71,8 @@ public class OracleAgent extends Agent {
 		Iterator<String> iter = categories.keySet().iterator();
 		while (iter.hasNext()) {
 			String category = iter.next();
-			@SuppressWarnings("unchecked")
-			Map<String, String> attributes = (Map<String, String>) categories.get(category);
-			results.putAll(oracleDB.getQueryResult(c, attributes.get("SQL"), category));
+			Metric attributes = (Metric) categories.get(category);
+			results.putAll(oracleDB.getQueryResult(c, attributes.getSql(), attributes.getId()));
 		}
 		return results;
 	}

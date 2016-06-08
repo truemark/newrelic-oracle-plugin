@@ -1,4 +1,4 @@
-package com.netradius.oraclePlugin;
+package com.netradius.oracle.plugin;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,6 +33,10 @@ public class DatabaseUtil {
 		ResultSet rs = null;
 		Map<String, Float> results = new HashMap<String, Float>();
 
+		if(conn == null) {
+			log.error("Invalid connection");
+			return null;
+		}
 		try {
 			PreparedStatement statement = conn.prepareStatement(query);
 			rs = statement.executeQuery();
@@ -41,7 +45,7 @@ public class DatabaseUtil {
 				for (int i = 1; i <= metaData.getColumnCount(); i++) { // use column names as the "key"
 					String value = rs.getString(i);
 					String columnName = metaData.getColumnName(i).toLowerCase();
-					String key = category + "/" + columnName;
+					String key = category.toLowerCase() + "/" + columnName.toLowerCase();
 					if (value == null) {
 						results.put(key, -1.0f);
 					} else {
