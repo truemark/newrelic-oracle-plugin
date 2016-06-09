@@ -4,13 +4,13 @@ package com.truemarkit.newrelic.oracle;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Agent;
+import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author Dilip S Sisodia
@@ -56,7 +56,7 @@ public class OracleAgent extends Agent {
 		if (connection == null) {
 			connection = DatabaseUtil.getConnection(host, port, serviceName, user, password);
 		}
-		Map<String, Float> results = gatherMetrics(connection); // Gather defined metrics
+		List<ResultMetricData> results = gatherMetrics(connection); // Gather defined metrics
 		reportMetrics(results); // Report Metrics to New Relic
 	}
 
@@ -65,31 +65,39 @@ public class OracleAgent extends Agent {
 		return this.name;
 	}
 
-	private Map<String, Float> gatherMetrics(Connection c) {
-		Map<String, Float> results = new HashMap<>(); // Create an empty set of results
+	private List<ResultMetricData> gatherMetrics(Connection c) {
 		Map<String, Object> categories = metricCategories; // Get current Metric Categories
+		List<ResultMetricData> resultMetrics = new ArrayList<>();
 
 		Iterator<String> iter = categories.keySet().iterator();
-		if (iter.hasNext()) {
+		while (iter.hasNext()) {
 			String category = iter.next();
 			Metric attributes = (Metric) categories.get(category);
-			results.putAll(oracleDB.getQueryResult(c, attributes.getSql(), attributes.getId()));
+			try {
+				if(c == null) {
+					c = DatabaseUtil.getConnection(host, port, serviceName, user, password);
+				}
+				resultMetrics.addAll(oracleDB.getQueryResult(c, attributes.getSql(), attributes.getId(), attributes.getDescriptionColumnCount(), attributes.getUnit()));
+			} catch (Exception ex) {
+				log.error("Database connection is invalid: " + ex.getMessage());
+			}
 		}
-		return results;
+//		return results;
+		return resultMetrics;
 	}
 
-	public void reportMetrics(Map<String, Float> results) {
+	public void reportMetrics(List<ResultMetricData> results) {
 		int count = 0;
 		log.info("Reporting ", results.size(), " metrics. ");
 		log.info(results.toString());
 
-		Iterator<String> iter = results.keySet().iterator();
-		while (iter.hasNext()) { // Iterate over current metrics
-			String key = iter.next().toLowerCase();
-			Float val = results.get(key);
-			log.debug(key + " " + val.toString());
-			count++;
-			reportMetric(key, "BYTES", val);
+		for (ResultMetricData data :results) {
+			if(data.getValue() == null) {
+				log.error("Can not report null value for key: " + data.getKey());
+			} else {
+				reportMetric(data.getKey(),data.getUnit(), data.getValue());
+				count++;
+			}
 		}
 		log.debug("Reported to New Relic " + count + " metrics.");
 	}

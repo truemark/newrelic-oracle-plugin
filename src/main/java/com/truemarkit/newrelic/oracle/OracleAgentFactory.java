@@ -22,7 +22,7 @@ public class OracleAgentFactory extends AgentFactory {
 		String name = (String) properties.get("name");
 		String host = (String) properties.get("host");
 		String port = (String) properties.get("port");
-		String serviceName = (String) properties.get("serviceName");
+		String serviceName = (String) properties.get("service_name");
 		String user = (String) properties.get("user");
 		String password = (String) properties.get("password");
 		String metrics = (String) properties.get("metrics");

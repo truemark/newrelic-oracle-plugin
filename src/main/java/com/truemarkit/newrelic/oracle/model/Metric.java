@@ -13,4 +13,5 @@ public class Metric {
 	private String sql;
 	private String unit;
 	private boolean enabled;
+	private Integer descriptionColumnCount;
 }

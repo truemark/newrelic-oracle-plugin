@@ -1,11 +1,15 @@
 package com.truemarkit.newrelic.oracle;
 
+import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * @author Dilip S Sisodia
@@ -13,15 +17,19 @@ import java.util.logging.Logger;
 @Slf4j
 public class DatabaseUtil {
 
+	private static Logger log = LoggerFactory.getLogger(DatabaseUtil.class);
 	private static Connection connection;
 	private static final String driver = "oracle.jdbc.driver.OracleDriver";
 
 	public static Connection getConnection(String host, String port, String serviceName, String user, String password) {
 		try {
 			if(connection == null || !connection.isValid(30000)) {
-
 				Class.forName(driver);
-				connection = DriverManager.getConnection(getHostUrl(host, port, serviceName) , user, password);
+				String databaseUrl = getHostUrl(host, port, serviceName);
+				connection = DriverManager.getConnection(databaseUrl, user, password);
+				if(connection == null) {
+					log.error("Error getting connection to database url: " + databaseUrl);
+				}
 			}
 		} catch (ClassNotFoundException ex) {
 			log.error("Error loading database driver: " + ex.getMessage());
@@ -32,12 +40,13 @@ public class DatabaseUtil {
 	}
 
 	private static String getHostUrl(String host, String port, String serviceName) {
-		return "jdbc:oacle:thin:@" + host.trim() + ":" + port.trim() + ":" + serviceName.trim();
+		return "jdbc:oracle:thin:@" + host.trim() + ":" + port.trim() + ":" + serviceName.trim();
 	}
 
-	public Map<String, Float> getQueryResult(Connection conn, String query, String category) {
+	public List<ResultMetricData> getQueryResult(Connection conn, String query, String category, int descColumnCount, String unit) {
 		ResultSet rs;
 		Map<String, Float> results = new HashMap<>();
+		List<ResultMetricData> returnMetrics = new ArrayList<>();
 
 		if(conn == null) {
 			log.error("Invalid connection");
@@ -51,11 +60,28 @@ public class DatabaseUtil {
 				for (int i = 1; i <= metaData.getColumnCount(); i++) { // use column names as the "key"
 					String value = rs.getString(i);
 					String columnName = metaData.getColumnName(i).toLowerCase();
-					String key = category.toLowerCase() + "/" + columnName.toLowerCase();
-					if (value == null) {
-						results.put(key, -1.0f);
-					} else {
-						results.put(key, translateStringToNumber(value));
+					String key = category.toLowerCase();
+
+					for(int j = 1; j <= descColumnCount; j++) {
+						key = key + "/" + rs.getString(j).toLowerCase();
+					}
+
+					if(i > descColumnCount) {
+						key = key + "/" + columnName.toLowerCase();
+						ResultMetricData data = new ResultMetricData();
+
+						if (value == null) {
+							results.put(key, -1.0f);
+							data.setKey(key);
+							data.setValue(-1.0f);
+							data.setUnit(unit);
+						} else {
+							results.put(key, translateStringToNumber(value));
+							data.setKey(key);
+							data.setValue(translateStringToNumber(value));
+							data.setUnit(unit);
+						}
+						returnMetrics.add(data);
 					}
 				}
 			}
@@ -63,7 +89,10 @@ public class DatabaseUtil {
 		} catch (SQLException ex) {
 			log.error("Error executing query: " + ex.getMessage());
 		}
-		return results;
+		Map<String, Map<String, Float>> finalResult = new HashMap<>();
+		finalResult.put(unit, results);
+//		return results;
+		return returnMetrics;
 	}
 
 	private static Float translateStringToNumber(String val) {
