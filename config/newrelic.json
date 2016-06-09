@@ -1,5 +1,5 @@
 {
-  "license_key": "1208af0c4b46257512f88e81697728597d28c2dc",
+  "license_key": "Your_License_Key_Here",
   "log_level": "info",
   "log_file_name": "newrelic_plugin.log",
   "log_file_path": "logs"
