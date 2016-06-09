@@ -1,4 +1,4 @@
-package com.netradius.oracle.plugin.model;
+package com.truemarkit.newrelic.oracle.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

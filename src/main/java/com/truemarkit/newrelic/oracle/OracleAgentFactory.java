@@ -1,11 +1,10 @@
-package com.netradius.oracle.plugin;
+package com.truemarkit.newrelic.oracle;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netradius.oracle.plugin.model.Metric;
+import com.truemarkit.newrelic.oracle.model.Metric;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.AgentFactory;
-import com.newrelic.metrics.publish.configuration.Config;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,14 +21,16 @@ public class OracleAgentFactory extends AgentFactory {
 	public Agent createConfiguredAgent(Map<String, Object> properties) throws ConfigurationException {
 		String name = (String) properties.get("name");
 		String host = (String) properties.get("host");
+		String port = (String) properties.get("port");
+		String serviceName = (String) properties.get("serviceName");
 		String user = (String) properties.get("user");
 		String password = (String) properties.get("password");
 		String metrics = (String) properties.get("metrics");
-		if (name == null || host == null || user == null || password == null) {
+		if (name == null || host == null || user == null || password == null || port == null || serviceName == null) {
 			throw new ConfigurationException("'name', 'host', 'user' and 'password' cannot be null.");
 		}
 
-		return new OracleAgent(name, host, user, password, readMetrics());
+		return new OracleAgent(name, host, port, serviceName, user, password, readMetrics());
 	}
 
 	public Map<String, Object> readMetrics() {

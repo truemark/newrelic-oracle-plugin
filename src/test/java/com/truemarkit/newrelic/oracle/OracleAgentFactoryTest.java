@@ -1,19 +1,22 @@
-package com.netradius.oracle.plugin;
+package com.truemarkit.newrelic.oracle;
 
-import com.netradius.oracle.plugin.model.Metric;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
+import com.truemarkit.newrelic.oracle.model.Metric;
 import junit.framework.Assert;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
   * @author Dilip S Sisodia
  */
+@Slf4j
 public class OracleAgentFactoryTest {
 	@Test
 	public void testOracleAgentFactory() {

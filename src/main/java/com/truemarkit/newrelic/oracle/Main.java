@@ -1,4 +1,4 @@
-package com.netradius.oracle.plugin;
+package com.truemarkit.newrelic.oracle;
 
 import com.newrelic.agent.deps.org.slf4j.Logger;
 import com.newrelic.agent.deps.org.slf4j.LoggerFactory;

@@ -1,8 +1,23 @@
 [
   {
 	"id": "TABLESPACE_USAGE",
-    "sql": "select files.tablespace_name, maxbytes as \"BYTES SIZE\", bytes - free_bytes as \"BYTES USED\", maxbytes - (bytes - free_bytes) as \"BYTES AVAIL\", round(maxbytes / 1048576, 2) as \"MB SIZE\", round((bytes - free_bytes) / 1048576, 2) as \"MB USED\", round((maxbytes - (bytes - free_bytes)) / 1048576, 2) as \"MB AVAIL\", round(((bytes - free_bytes) / maxbytes) * 100, 2) as \"% USED\", round((100 - ((bytes - free_bytes) / maxbytes) * 100), 2) as \"% FREE\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name",
-    "unit": "BYTES",
-    "enabled": true
+	"sql": "select files.tablespace_name, maxbytes as \"BYTES SIZE\", bytes - free_bytes as \"BYTES USED\", maxbytes - (bytes - free_bytes) as \"BYTES AVAIL\", round(maxbytes / 1048576, 2) as \"MB SIZE\", round((bytes - free_bytes) / 1048576, 2) as \"MB USED\", round((maxbytes - (bytes - free_bytes)) / 1048576, 2) as \"MB AVAIL\", round(((bytes - free_bytes) / maxbytes) * 100, 2) as \"% USED\", round((100 - ((bytes - free_bytes) / maxbytes) * 100), 2) as \"% FREE\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name",
+	"unit": "BYTES",
+	"enabled": true,
+	"desc_column": "1"
+  },
+  {
+	"id": "TOTAL_SESSION_COUNT",
+	"sql": "select count(1) from v$session",
+	"unit": "",
+	"enabled": true,
+	"desc_column": "1"
+  },
+  {
+	"id": "BLOCKED_SESSIONS",
+	"sql": "select s.blocking_session, s.sid, s.serial#, s.seconds_in_wait from v$session s where blocking_session is not null",
+	"unit": "BYTES",
+	"enabled": true,
+	"desc_column": "1,2,3"
   }
 ]

@@ -1,10 +1,12 @@
 {
 	"agents": [
-		{
-			"name": "Localhost",
-			"host": "jdbc:oracle:thin:@localhost:1521:xe",
-			"user": "scott",
-			"password": "tiger"
-		}
+	  {
+		"name": "Localhost",
+		"host": "jdbc:oracle:thin:@localhost:1521:xe",
+		"port": "1521",
+		"service_name": "xe",
+		"user": "scott",
+		"password": "tiger"
+	  }
 	]
 }
