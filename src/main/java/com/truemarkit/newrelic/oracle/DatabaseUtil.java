@@ -23,7 +23,7 @@ public class DatabaseUtil {
 
 	public static Connection getConnection(String host, String port, String serviceName, String user, String password) {
 		try {
-			if(connection == null || !connection.isValid(30000)) {
+			if(connection == null) {
 				Class.forName(driver);
 				String databaseUrl = getHostUrl(host, port, serviceName);
 				connection = DriverManager.getConnection(databaseUrl, user, password);
@@ -44,7 +44,6 @@ public class DatabaseUtil {
 	}
 
 	public List<ResultMetricData> getQueryResult(Connection conn, String query, String category, int descColumnCount, String unit) {
-		ResultSet rs;
 		Map<String, Float> results = new HashMap<>();
 		List<ResultMetricData> returnMetrics = new ArrayList<>();
 
@@ -52,9 +51,9 @@ public class DatabaseUtil {
 			log.error("Invalid connection");
 			return null;
 		}
-		try {
-			PreparedStatement statement = conn.prepareStatement(query);
-			rs = statement.executeQuery();
+
+		try(PreparedStatement statement = conn.prepareStatement(query);
+		    ResultSet rs = statement.executeQuery()) {
 			ResultSetMetaData metaData = rs.getMetaData();
 			while (rs.next()) {
 				for (int i = 1; i <= metaData.getColumnCount(); i++) { // use column names as the "key"
