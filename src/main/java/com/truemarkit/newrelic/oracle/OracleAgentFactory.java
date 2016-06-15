@@ -33,22 +33,16 @@ public class OracleAgentFactory extends AgentFactory {
 		return new OracleAgent(name, host, port, serviceName, user, password, readMetrics());
 	}
 
-	public Map<String, Object> readMetrics() {
-		Map<String, Object> metricCategories = new HashMap<>();
+	public List<Metric> readMetrics() {
+		List<Metric> metrics = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-//			ClassLoader loader = ClassLoader.getSystemClassLoader();
-			List<Metric> metrics = objectMapper.readValue(new File("config/metric.json"),
+			metrics = objectMapper.readValue(new File("config/metric.json"),
 					new TypeReference<List<Metric>>() {});
-			for (Metric metric: metrics) {
-				if(metric.isEnabled()){
-					metricCategories.put(metric.getId(), metric);
-				}
-			}
 		} catch (Exception ex) {
 			log.error("Can not read metrics: " + ex.getMessage());
 		}
-		return metricCategories;
+		return metrics;
 	}
 
 }

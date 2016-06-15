@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
@@ -41,7 +42,7 @@ public class OracleAgentFactoryTest {
 	@Test
 	public void testReadMetrics() {
 		OracleAgentFactory factory = new OracleAgentFactory();
-		Map<String, Object> metrics = factory.readMetrics();
+		List<Metric> metrics = factory.readMetrics();
 		assertTrue(metrics.size() > 0);
 	}
 

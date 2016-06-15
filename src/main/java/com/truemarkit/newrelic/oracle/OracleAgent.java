@@ -30,12 +30,12 @@ public class OracleAgent extends Agent {
 	private final String user;
 	private final String password;
 
-	private Map<String, Object> metricCategories = new HashMap<>();
+	private List<Metric> metricCategories = new ArrayList<>();
 
 	private DatabaseUtil oracleDB;
 	private Connection connection;
 
-	public OracleAgent(String name, String host, String port, String serviceName, String user, String password, Map<String, Object> metricCategories) {
+	public OracleAgent(String name, String host, String port, String serviceName, String user, String password, List<Metric> metricCategories) {
 		super(GUID, version);
 
 		this.name = name;
@@ -66,23 +66,21 @@ public class OracleAgent extends Agent {
 	}
 
 	private List<ResultMetricData> gatherMetrics(Connection c) {
-		Map<String, Object> categories = metricCategories; // Get current Metric Categories
+		List<Metric> categories = metricCategories; // Get current Metric Categories
 		List<ResultMetricData> resultMetrics = new ArrayList<>();
 
-		Iterator<String> iter = categories.keySet().iterator();
-		while (iter.hasNext()) {
-			String category = iter.next();
-			Metric attributes = (Metric) categories.get(category);
+		for (Metric metric: categories) {
 			try {
 				if(c == null) {
 					c = DatabaseUtil.getConnection(host, port, serviceName, user, password);
 				}
-				resultMetrics.addAll(oracleDB.getQueryResult(c, attributes.getSql(), attributes.getId(), attributes.getDescriptionColumnCount(), attributes.getUnit()));
+				if(metric.isEnabled()) {
+					resultMetrics.addAll(oracleDB.getQueryResult(c, metric.getSql(), metric.getId(), metric.getDescriptionColumnCount(), metric.getUnit()));
+				}
 			} catch (Exception ex) {
 				log.error("Database connection is invalid: " + ex.getMessage());
 			}
 		}
-//		return results;
 		return resultMetrics;
 	}
 
