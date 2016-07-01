@@ -6,7 +6,7 @@
       "port": "1521",
       "service_name": "",
       "sid": "xe",
-      "user": "scott",
+      "username": "scott",
       "password": "tiger"
     }
   ]

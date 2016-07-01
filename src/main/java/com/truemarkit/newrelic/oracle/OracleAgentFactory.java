@@ -24,14 +24,14 @@ public class OracleAgentFactory extends AgentFactory {
 		String port = (String) properties.get("port");
 		String serviceName = (String) properties.get("service_name");
 		String sid = (String) properties.get("sid");
-		String user = (String) properties.get("user");
+		String username = (String) properties.get("username");
 		String password = (String) properties.get("password");
 		String metrics = (String) properties.get("metrics");
-		if (name == null || host == null || user == null || password == null || port == null || serviceName == null) {
+		if (name == null || host == null || username == null || password == null || port == null || serviceName == null) {
 			throw new ConfigurationException("'name', 'host', 'user' and 'password' cannot be null.");
 		}
 
-		return new OracleAgent(name, host, port, sid, serviceName, user, password, readMetrics());
+		return new OracleAgent(name, host, port, sid, serviceName, username, password, readMetrics());
 	}
 
 	public List<Metric> readMetrics() {
