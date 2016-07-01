@@ -35,7 +35,7 @@
     descriptionColumnCount: "0"
 
   - id: "blocking session list"
-    sql: "select sid || ',' || serial# || ' blocked by ' || s.blocking_session as \"session\" , s.seconds_in_wait as \"seconds in wait\" from v$session s where blocking_session is not null"
+    sql: "select sid || ',' || serial# || ' blocked by ' || s.blocking_session as \"session\" , s.seconds_in_wait as \" \" from v$session s where blocking_session is not null"
     unit: "sec"
     enabled: true
     descriptionColumnCount: "1"

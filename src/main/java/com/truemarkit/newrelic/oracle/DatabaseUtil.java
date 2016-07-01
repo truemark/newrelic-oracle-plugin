@@ -70,7 +70,9 @@ public class DatabaseUtil {
 					}
 
 					if(i > descColumnCount) {
-						key = key + "/" + columnName.toLowerCase();
+						if(!StringHelper.isEmpty(columnName)) {
+							key = key + "/" + columnName.toLowerCase();
+						}
 						ResultMetricData data = new ResultMetricData();
 
 						if (value == null) {
