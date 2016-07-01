@@ -1,5 +1,7 @@
 package com.truemarkit.newrelic.oracle;
 
+import com.newrelic.agent.deps.org.slf4j.Logger;
+import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import junit.framework.Assert;
@@ -19,6 +21,9 @@ import static org.junit.Assert.assertTrue;
  */
 @Slf4j
 public class OracleAgentFactoryTest {
+
+	private static Logger log = LoggerFactory.getLogger(OracleAgentFactoryTest.class);
+
 	@Test
 	public void testOracleAgentFactory() {
 		OracleAgentFactory factory = new OracleAgentFactory();

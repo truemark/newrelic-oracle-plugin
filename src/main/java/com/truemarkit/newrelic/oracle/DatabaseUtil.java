@@ -1,10 +1,10 @@
 package com.truemarkit.newrelic.oracle;
 
 import com.netradius.commons.lang.StringHelper;
+import com.newrelic.agent.deps.org.slf4j.Logger;
+import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;

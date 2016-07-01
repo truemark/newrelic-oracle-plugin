@@ -1,5 +1,7 @@
 package com.truemarkit.newrelic.oracle;
 
+import com.newrelic.agent.deps.org.slf4j.Logger;
+import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -17,6 +19,9 @@ import static junit.framework.TestCase.assertNotNull;
  */
 @Slf4j
 public class OracleDatabaseTest {
+
+	private static Logger log = LoggerFactory.getLogger(OracleDatabaseTest.class);
+
 	@Test
 	public void testGetConnection() {
 		DatabaseUtil db = new DatabaseUtil();

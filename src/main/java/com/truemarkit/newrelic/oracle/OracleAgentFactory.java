@@ -1,6 +1,8 @@
 package com.truemarkit.newrelic.oracle;
 
 import com.netradius.commons.lang.StringHelper;
+import com.newrelic.agent.deps.org.slf4j.Logger;
+import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.agent.deps.org.yaml.snakeyaml.Yaml;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import com.newrelic.metrics.publish.Agent;
@@ -17,6 +19,8 @@ import java.util.*;
  */
 @Slf4j
 public class OracleAgentFactory extends AgentFactory {
+
+	private static Logger log = LoggerFactory.getLogger(OracleAgentFactory.class);
 
 	@Override
 	public Agent createConfiguredAgent(Map<String, Object> properties) throws ConfigurationException {
