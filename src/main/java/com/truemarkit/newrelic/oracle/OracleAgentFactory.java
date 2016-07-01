@@ -1,15 +1,14 @@
 package com.truemarkit.newrelic.oracle;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netradius.commons.lang.StringHelper;
+import com.newrelic.agent.deps.org.yaml.snakeyaml.Yaml;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.AgentFactory;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -50,12 +49,18 @@ public class OracleAgentFactory extends AgentFactory {
 	}
 
 	public List<Metric> readMetrics() throws ConfigurationException {
-		List<Metric> metrics;
-		ObjectMapper objectMapper = new ObjectMapper();
-		try (InputStream in = getClass().getResourceAsStream("/metrics.json")) {
-			metrics = objectMapper.readValue(in, new TypeReference<List<Metric>>() {});
-		} catch (Exception e) {
-			throw new ConfigurationException("Failed to read metrics: " + e.getMessage(), e);
+		List<Metric> metrics = new ArrayList<>();
+		Yaml y = new Yaml();
+
+		try(InputStream in = Main.class.getClass().getResourceAsStream("/metric.yml")) {
+			Iterator<Object> lstObj = y.loadAll(in).iterator();
+			Object o = new Object();
+			while (lstObj.hasNext()) {
+				o = lstObj.next();
+			}
+			metrics = (List<Metric>) o;
+		} catch (IOException ex) {
+			log.error("Failed to read metrics: " + ex.getMessage());
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("Found [" + metrics.size() + "] metrics");
