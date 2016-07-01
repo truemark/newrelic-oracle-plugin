@@ -1,17 +1,17 @@
   - id: "tablespace/used"
-    sql: "select files.tablespace_name, round(((bytes - free_bytes) / maxbytes) * 100, 2) as \"used\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
+    sql: "select files.tablespace_name, round(((bytes - free_bytes) / maxbytes) * 100, 2) as \" \" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
     unit: "%"
     enabled: true
     descriptionColumnCount: "1"
 
   - id: "tablespace/free"
-    sql: "select files.tablespace_name, round((100 - ((bytes - free_bytes) / maxbytes) * 100), 2) as \"free\"  from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
+    sql: "select files.tablespace_name, round((100 - ((bytes - free_bytes) / maxbytes) * 100), 2) as \" \"  from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
     unit: "%"
     enabled: true
     descriptionColumnCount: "1"
 
   - id: "tablespace/bytes"
-    sql: "select files.tablespace_name, maxbytes as \"size\", bytes - free_bytes as \"used\", maxbytes - (bytes - free_bytes) as \"avail\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name ) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
+    sql: "select files.tablespace_name, maxbytes as \"size\", bytes - free_bytes as \" \", maxbytes - (bytes - free_bytes) as \"avail\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name ) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
     unit: "BYTES"
     enabled: true
     descriptionColumnCount: "1"
@@ -41,7 +41,7 @@
     descriptionColumnCount: "1"
 
   - id: "blocking sessions"
-    sql: "select count(1) as \"count\" from v$session where blocking_session is not null"
+    sql: "select count(1) as \" \" from v$session where blocking_session is not null"
     unit: "sessions"
     enabled: true
     descriptionColumnCount: "0"
