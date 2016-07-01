@@ -26,6 +26,7 @@ public class OracleAgent extends Agent {
 	private final String name;
 	private final String host;
 	private final String port;
+	private final String sid;
 	private final String serviceName;
 	private final String user;
 	private final String password;
@@ -35,26 +36,28 @@ public class OracleAgent extends Agent {
 	private DatabaseUtil oracleDB;
 	private Connection connection;
 
-	public OracleAgent(String name, String host, String port, String serviceName, String user, String password, List<Metric> metricCategories) {
+	public OracleAgent(String name, String host, String port, String sid,
+			String serviceName, String user, String password, List<Metric> metricCategories) {
 		super(GUID, version);
 
 		this.name = name;
 		this.host = host;
 		this.port = port;
+		this.sid = sid;
 		this.serviceName = serviceName;
 		this.user = user;
 		this.password = password;
 		this.metricCategories = metricCategories;
 
 		oracleDB = new DatabaseUtil();
-		connection = DatabaseUtil.getConnection(host, port, serviceName, user, password);
+		connection = DatabaseUtil.getConnection(host, port, sid ,serviceName, user, password);
 	}
 
 	@Override
 	public void pollCycle() {
 
 		if (connection == null) {
-			connection = DatabaseUtil.getConnection(host, port, serviceName, user, password);
+			connection = DatabaseUtil.getConnection(host, port, sid, serviceName, user, password);
 		}
 		List<ResultMetricData> results = gatherMetrics(connection); // Gather defined metrics
 		reportMetrics(results); // Report Metrics to New Relic
@@ -72,7 +75,7 @@ public class OracleAgent extends Agent {
 		for (Metric metric: categories) {
 			try {
 				if(c == null) {
-					c = DatabaseUtil.getConnection(host, port, serviceName, user, password);
+					c = DatabaseUtil.getConnection(host, port, sid, serviceName, user, password);
 				}
 				if(metric.isEnabled()) {
 					resultMetrics.addAll(oracleDB.getQueryResult(c, metric.getSql(), metric.getId(), metric.getDescriptionColumnCount(), metric.getUnit()));

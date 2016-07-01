@@ -1,12 +1,13 @@
 {
-	"agents": [
-	  {
-		"name": "Localhost",
-		"host": "localhost",
-		"port": "1521",
-		"service_name": "xe",
-		"user": "scott",
-		"password": "tiger"
-	  }
-	]
+  "agents": [
+    {
+      "name": "Localhost",
+      "host": "localhost",
+      "port": "1521",
+      "service_name": "",
+      "sid": "xe",
+      "user": "scott",
+      "password": "tiger"
+    }
+  ]
 }

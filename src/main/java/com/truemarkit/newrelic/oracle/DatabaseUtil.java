@@ -1,5 +1,6 @@
 package com.truemarkit.newrelic.oracle;
 
+import com.netradius.commons.lang.StringHelper;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -21,11 +22,12 @@ public class DatabaseUtil {
 	private static Connection connection;
 	private static final String driver = "oracle.jdbc.driver.OracleDriver";
 
-	public static Connection getConnection(String host, String port, String serviceName, String user, String password) {
+	public static Connection getConnection(String host, String port, String sid,
+			String serviceName, String user, String password) {
 		try {
 			if(connection == null) {
 				Class.forName(driver);
-				String databaseUrl = getHostUrl(host, port, serviceName);
+				String databaseUrl = getHostUrl(host, port, sid, serviceName);
 				connection = DriverManager.getConnection(databaseUrl, user, password);
 				if(connection == null) {
 					log.error("Error getting connection to database url: " + databaseUrl);
@@ -39,8 +41,10 @@ public class DatabaseUtil {
 		return connection;
 	}
 
-	private static String getHostUrl(String host, String port, String serviceName) {
-		return "jdbc:oracle:thin:@" + host.trim() + ":" + port.trim() + ":" + serviceName.trim();
+	private static String getHostUrl(String host, String port, String sid, String serviceName) {
+		return StringHelper.isEmpty(sid)
+				? "jdbc:oracle:thin:@//" + host.trim() + ":" + port.trim() + "/" + serviceName.trim()
+				: "jdbc:oracle:thin:@" + host.trim() + ":" + port.trim() + ":" + sid.trim();
 	}
 
 	public List<ResultMetricData> getQueryResult(Connection conn, String query, String category, int descColumnCount, String unit) {
