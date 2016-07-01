@@ -6,30 +6,34 @@
 
 	<groupId>com.truemarkit.newrelic.oracle</groupId>
 	<artifactId>oracle-plugin</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<properties>
 		<!-- Build Settings -->
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<compiler.optimize>false</compiler.optimize>
-		<compiler.debug>true</compiler.debug>
 
-		<!-- Plugin Versions -->
-		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		<!-- Plugin Versions (Alphabetical Order) -->
 		<maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
+		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 
+		<!-- Depencency Versions (Alphabetical Order) -->
+		<jackson.version>2.3.3</jackson.version>
+		<json-simple.version>1.1.1</json-simple.version>
+		<junit.version>4.12</junit.version>
 		<logback.version>1.1.6</logback.version>
 		<lombok.version>1.16.8</lombok.version>
+		<newrelic-agent.version>3.28.0</newrelic-agent.version>
+		<newrelic-api.version>3.28.0</newrelic-api.version>
+		<ojdbc.version>10.2.0.3.0</ojdbc.version>
+		<public-metrics.version>2.0.1</public-metrics.version>
 		<slf4j.version>1.7.21</slf4j.version>
 		<validation.version>1.1.0.Final</validation.version>
-		<junit.version>4.12</junit.version>
-		<ojdbc.version>10.2.0.3.0</ojdbc.version>
-		<jackson.version>2.3.3</jackson.version>
 	</properties>
 
 	<dependencies>
+		<!-- Alphabetical Order by groupId,artifactId -->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc14</artifactId>
@@ -66,12 +70,12 @@
 		<dependency>
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-agent</artifactId>
-			<version>3.28.0</version>
+			<version>${newrelic-agent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-api</artifactId>
-			<version>3.28.0</version>
+			<version>${newrelic-api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -81,12 +85,13 @@
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
-			<version>1.1.1</version>
+			<version>${json-simple.version}</version>
 		</dependency>
+		<!-- https://github.com/newrelic-platform/metrics_publish_java/tree/master/dist -->
 		<dependency>
 			<groupId>com.newrelic.metrics</groupId>
 			<artifactId>public-metrics</artifactId>
-			<version>2.0.1</version>
+			<version>${public-metrics.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -96,11 +101,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
-
 					<source>${java.version}</source>
 					<target>${java.version}</target>
-					<optimize>${compiler.optimize}</optimize>
-					<debug>${compiler.debug}</debug>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -134,14 +136,6 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>lib</id>
-			<url>file://${project.basedir}/lib</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
 			<id>netradius-public</id>
 			<name>NetRadius Nexus Managed Public Repository</name>
 			<url>http://mirrors.netradius.com/nexus/content/groups/public</url>
@@ -154,21 +148,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>netradius-private-thirdparty</id>
-			<name>NetRadius Third-party Private Repository</name>
-			<url>https://mirrors.netradius.com/nexus/content/repositories/private-thirdparty</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
-
 	<pluginRepositories>
 		<pluginRepository>
 			<id>netradius-public</id>
@@ -184,5 +164,4 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
 </project>
