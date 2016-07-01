@@ -40,7 +40,7 @@ public class OracleAgentFactoryTest {
 	}
 
 	@Test
-	public void testReadMetrics() {
+	public void testReadMetrics() throws Exception {
 		OracleAgentFactory factory = new OracleAgentFactory();
 		List<Metric> metrics = factory.readMetrics();
 		assertTrue(metrics.size() > 0);

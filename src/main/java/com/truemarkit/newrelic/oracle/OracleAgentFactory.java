@@ -10,6 +10,7 @@ import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -48,14 +49,16 @@ public class OracleAgentFactory extends AgentFactory {
 		return new OracleAgent(name, host, port, sid, serviceName, username, password, readMetrics());
 	}
 
-	public List<Metric> readMetrics() {
-		List<Metric> metrics = new ArrayList<>();
+	public List<Metric> readMetrics() throws ConfigurationException {
+		List<Metric> metrics;
 		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			metrics = objectMapper.readValue(new File("config/metric.json"),
-					new TypeReference<List<Metric>>() {});
-		} catch (Exception ex) {
-			log.error("Can not read metrics: " + ex.getMessage());
+		try (InputStream in = getClass().getResourceAsStream("/metrics.json")) {
+			metrics = objectMapper.readValue(in, new TypeReference<List<Metric>>() {});
+		} catch (Exception e) {
+			throw new ConfigurationException("Failed to read metrics: " + e.getMessage(), e);
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("Found [" + metrics.size() + "] metrics");
 		}
 		return metrics;
 	}
