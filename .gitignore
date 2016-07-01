@@ -18,6 +18,7 @@ hs_err_pid*
 # Maven Files & Directories
 target
 
-# New Relic Config Files
+# New Relic Files
 config/newrelic.json
 config/plugin.json
+logs
