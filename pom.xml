@@ -18,8 +18,9 @@
 		<maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 
-		<!-- Depencency Versions (Alphabetical Order) -->
+		<!-- Dependency Versions (Alphabetical Order) -->
 		<jackson.version>2.3.3</jackson.version>
+		<java-commons.version>0.0.6</java-commons.version>
 		<json-simple.version>1.1.1</json-simple.version>
 		<junit.version>4.12</junit.version>
 		<logback.version>1.1.6</logback.version>
@@ -28,7 +29,7 @@
 		<newrelic-api.version>3.28.0</newrelic-api.version>
 		<ojdbc.version>10.2.0.3.0</ojdbc.version>
 		<public-metrics.version>2.0.1</public-metrics.version>
-		<slf4j.version>1.7.21</slf4j.version>
+		<!--<slf4j.version>1.7.21</slf4j.version>-->
 		<validation.version>1.1.0.Final</validation.version>
 	</properties>
 
@@ -51,11 +52,11 @@
 			<version>${logback.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.slf4j</groupId>-->
+			<!--<artifactId>slf4j-api</artifactId>-->
+			<!--<version>${slf4j.version}</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -76,6 +77,11 @@
 			<groupId>com.newrelic.agent.java</groupId>
 			<artifactId>newrelic-api</artifactId>
 			<version>${newrelic-api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netradius.commons</groupId>
+			<artifactId>java-commons</artifactId>
+			<version>${java-commons.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
