@@ -1,6 +1,8 @@
 package com.truemarkit.newrelic.oracle;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Agent;
@@ -40,6 +42,8 @@ public class OracleAgent extends Agent {
 			String serviceName, String user, String password, List<Metric> metricCategories) {
 		super(GUID, version);
 
+		ObjectMapper objectMapper = new ObjectMapper();
+
 		this.name = name;
 		this.host = host;
 		this.port = port;
@@ -47,7 +51,7 @@ public class OracleAgent extends Agent {
 		this.serviceName = serviceName;
 		this.user = user;
 		this.password = password;
-		this.metricCategories = metricCategories;
+		this.metricCategories = objectMapper.convertValue(metricCategories, new TypeReference<List<Metric>>() {});
 
 		oracleDB = new DatabaseUtil();
 		connection = DatabaseUtil.getConnection(host, port, sid ,serviceName, user, password);
