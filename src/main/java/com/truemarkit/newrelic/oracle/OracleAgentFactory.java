@@ -26,7 +26,6 @@ public class OracleAgentFactory extends AgentFactory {
 		String sid = (String) properties.get("sid");
 		String username = (String) properties.get("username");
 		String password = (String) properties.get("password");
-		String metrics = (String) properties.get("metrics");
 		if (name == null || host == null || username == null || password == null || port == null || serviceName == null) {
 			throw new ConfigurationException("'name', 'host', 'user' and 'password' cannot be null.");
 		}
