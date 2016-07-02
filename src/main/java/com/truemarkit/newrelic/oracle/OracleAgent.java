@@ -57,6 +57,7 @@ public class OracleAgent extends Agent {
 		config.setPoolName(name);
 		config.setDriverClassName("oracle.jdbc.OracleDriver");
 		config.setInitializationFailFast(true);
+		config.setConnectionTestQuery("SELECT 1 FROM DUAL");
 		dataSource = new HikariDataSource(config);
 
 		// TODO I don't get this
