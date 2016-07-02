@@ -27,7 +27,7 @@ public class OracleAgentFactory extends AgentFactory {
 	@Override
 	public Agent createConfiguredAgent(Map<String, Object> properties) throws ConfigurationException {
 		String name = (String) properties.get("name");
-		if (StringHelper.isEmpty(nsame)) {
+		if (StringHelper.isEmpty(name)) {
 			throw new ConfigurationException("name may not be empty");
 		}
 		String host = (String) properties.get("host");
