@@ -4,7 +4,6 @@ import com.netradius.commons.lang.StringHelper;
 import com.newrelic.agent.deps.org.slf4j.Logger;
 import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
-import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,11 +13,12 @@ import java.util.Map;
 
 /**
  * @author Dilip S Sisodia
+ * @author Erik R. Jensen
  */
-@Slf4j
 public class DatabaseUtil {
 
-	private static Logger log = LoggerFactory.getLogger(DatabaseUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(DatabaseUtil.class);
+
 	private static Connection connection;
 	private static final String driver = "oracle.jdbc.driver.OracleDriver";
 

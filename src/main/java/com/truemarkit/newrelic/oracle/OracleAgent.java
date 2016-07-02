@@ -3,25 +3,28 @@ package com.truemarkit.newrelic.oracle;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.truemarkit.newrelic.oracle.model.Metric;
+import com.newrelic.agent.deps.org.slf4j.Logger;
 import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Agent;
+import com.truemarkit.newrelic.oracle.model.Metric;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Dilip S Sisodia
  */
-@Slf4j
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class OracleAgent extends Agent {
 
-	private static com.newrelic.agent.deps.org.slf4j.Logger log = LoggerFactory.getLogger(OracleAgent.class);
+	private static final Logger log = LoggerFactory.getLogger(OracleAgent.class);
 
 	private static final String GUID = "com.truemarkit.newrelic.oracletest";
 	private static final String version = "1.0.0";

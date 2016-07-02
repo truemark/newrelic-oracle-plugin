@@ -4,28 +4,30 @@ import com.netradius.commons.lang.StringHelper;
 import com.newrelic.agent.deps.org.slf4j.Logger;
 import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.agent.deps.org.yaml.snakeyaml.Yaml;
-import com.truemarkit.newrelic.oracle.model.Metric;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.AgentFactory;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
-import lombok.extern.slf4j.Slf4j;
+import com.truemarkit.newrelic.oracle.model.Metric;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Dilip S Sisodia
+ * @author Erik R. Jensen
  */
-@Slf4j
 public class OracleAgentFactory extends AgentFactory {
 
-	private static Logger log = LoggerFactory.getLogger(OracleAgentFactory.class);
+	private static final Logger log = LoggerFactory.getLogger(OracleAgentFactory.class);
 
 	@Override
 	public Agent createConfiguredAgent(Map<String, Object> properties) throws ConfigurationException {
 		String name = (String) properties.get("name");
-		if (StringHelper.isEmpty(name)) {
+		if (StringHelper.isEmpty(nsame)) {
 			throw new ConfigurationException("name may not be empty");
 		}
 		String host = (String) properties.get("host");
