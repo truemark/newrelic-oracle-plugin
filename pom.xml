@@ -19,6 +19,8 @@
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 
 		<!-- Dependency Versions (Alphabetical Order) -->
+		<findbugs.version>3.0.1</findbugs.version>
+		<hikaricp.version>2.4.5</hikaricp.version>
 		<jackson.version>2.3.3</jackson.version>
 		<java-commons.version>0.0.6</java-commons.version>
 		<json-simple.version>1.1.1</json-simple.version>
@@ -27,7 +29,7 @@
 		<lombok.version>1.16.8</lombok.version>
 		<newrelic-agent.version>3.28.0</newrelic-agent.version>
 		<newrelic-api.version>3.28.0</newrelic-api.version>
-		<ojdbc.version>10.2.0.3.0</ojdbc.version>
+		<ojdbc.version>11.2.0.3.0</ojdbc.version>
 		<public-metrics.version>2.0.1</public-metrics.version>
 		<snakeyaml.version>1.11</snakeyaml.version>
 		<validation.version>1.1.0.Final</validation.version>
@@ -36,9 +38,10 @@
 	<dependencies>
 		<!-- Alphabetical Order by groupId,artifactId -->
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>${ojdbc.version}</version>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>java-hamcrest</artifactId>
+			<version>2.0.0.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -51,6 +54,21 @@
 			<artifactId>logback-core</artifactId>
 			<version>${logback.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>${findbugs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>oracle.jdbc</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>${ojdbc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikaricp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
