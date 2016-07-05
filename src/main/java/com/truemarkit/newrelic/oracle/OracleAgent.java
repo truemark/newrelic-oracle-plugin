@@ -95,9 +95,6 @@ public class OracleAgent extends Agent {
 
 	public void reportMetrics(List<ResultMetricData> results) {
 		int count = 0;
-		log.info("Reporting ", results.size(), " metrics. ");
-		log.info(results.toString());
-
 		for (ResultMetricData data :results) {
 			if(data.getValue() == null) {
 				log.error("Can not report null value for key: " + data.getKey());
@@ -106,6 +103,6 @@ public class OracleAgent extends Agent {
 				count++;
 			}
 		}
-		log.debug("Reported to New Relic " + count + " metrics.");
+		log.debug("Reported [" + count + "] metrics");
 	}
 }
