@@ -28,24 +28,6 @@
     enabled: true
     descriptionColumnCount: "0"
 
-#  - id: "sessions"
-#    sql: "select sessions_current as \"count\" from v$license"
-#    unit: "sessions"
-#    enabled: true
-#    descriptionColumnCount: "0"
-#
-#  - id: "sessions"
-#    sql: "select sessions_highwater as \"highwater mark\" from v$license"
-#    unit: "sessions"
-#    enabled: true
-#    descriptionColumnCount: "0"
-#
-#  - id: "sessions"
-#    sql: "select limit_value as \"limit\" from v$resource_limit where resource_name = 'sessions'"
-#    unit: "sessions"
-#    enabled: true
-#    descriptionColumnCount: "0"
-
   - id: "processes"
     sql: "select current_utilization as \"count\", max_utilization as \"highwater mark\", limit_value as \"limit\" from v$resource_limit where resource_name = 'processes'"
     unit: "processes"
