@@ -9,9 +9,7 @@ import com.newrelic.metrics.publish.AgentFactory;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import com.truemarkit.newrelic.oracle.model.Metric;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,24 +52,22 @@ public class OracleAgentFactory extends AgentFactory {
 		return new OracleAgent(name, host, port, sid, serviceName, username, password, readMetrics());
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Metric> readMetrics() throws ConfigurationException {
-		List<Metric> metrics = new ArrayList<>();
 		Yaml y = new Yaml();
-
-		try(InputStream in = Main.class.getClass().getResourceAsStream("/metric.yml")) {
+		try (InputStream in = Main.class.getClass().getResourceAsStream("/metrics.yml")) {
 			Iterator<Object> lstObj = y.loadAll(in).iterator();
-			Object o = new Object();
-			while (lstObj.hasNext()) {
-				o = lstObj.next();
+			if (lstObj.hasNext()) {
+				List<Metric> metrics = (List<Metric>) lstObj.next();
+				if (log.isDebugEnabled()) {
+					log.debug("Found [" + metrics.size() + "] metrics");
+				}
+				return metrics;
 			}
-			metrics = (List<Metric>) o;
-		} catch (IOException ex) {
-			log.error("Failed to read metrics: " + ex.getMessage());
+		} catch (Exception e) {
+			throw new ConfigurationException("Failed to read metrics: " + e.getMessage(), e);
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("Found [" + metrics.size() + "] metrics");
-		}
-		return metrics;
+		throw new ConfigurationException("No metrics found");
 	}
 
 }
