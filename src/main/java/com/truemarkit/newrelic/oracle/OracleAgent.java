@@ -22,6 +22,7 @@ import static com.truemarkit.newrelic.oracle.DatabaseUtil.*;
 
 /**
  * @author Dilip S Sisodia
+ * @author Erik R. jensen
  */
 @Data
 @ToString(callSuper = true)
@@ -31,9 +32,9 @@ public class OracleAgent extends Agent {
 	private static final Logger log = LoggerFactory.getLogger(OracleAgent.class);
 
 	// This is used for testing
-	private static final String GUID = "com.truemarkit.newrelic.oracletest";
+//	private static final String GUID = "com.truemarkit.newrelic.oracletest";
 	// This is used for production
-//	private static final String GUID = "com.truemarkit.newrelic.oracle";
+	private static final String GUID = "com.truemarkit.newrelic.oracle";
 	private static final String version = "1.0.0";
 
 	private HikariDataSource dataSource;
