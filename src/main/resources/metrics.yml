@@ -45,15 +45,3 @@
     unit: "sessions"
     enabled: true
     descriptionColumnCount: "0"
-
-  - id: "free bytes"
-    sql: "select sum(rt.fm) \" \" from (select name, bytes fm from v$sgastat where name='free memory') rt"
-    unit: "bytes"
-    enabled: true
-    descriptionColumnCount: "0"
-
-  - id: "shared pool"
-    sql: "select pool as \"pool\", bytes as \" \" from v$sgastat where name like '%free memory%'"
-    unit: "bytes"
-    enabled: true
-    descriptionColumnCount: "1"
