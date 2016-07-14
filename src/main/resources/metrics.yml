@@ -45,3 +45,15 @@
     unit: "sessions"
     enabled: true
     descriptionColumnCount: "0"
+
+  - id: "cache hit ratio"
+    sql: "select ((1 - (sum(getmisses) / (sum(gets) + sum(getmisses))))) * 100 as \"hit rate\" from v$rowcache where gets + getmisses <> 0"
+    unit: "Hit Rate"
+    enabled: true
+    descriptionColumnCount: "0"
+
+  - id: "cache hit ratio"
+    sql: "select rest.hr \"dictionary cache hit ratio\" from ( select sum(GETS), sum(GETMISSES), round((1 - (sum(GETMISSES) / sum(GETS))) * 100,2) hr from v$rowcache ) rest"
+    unit: "%"
+    enabled: true
+    descriptionColumnCount: "0"
