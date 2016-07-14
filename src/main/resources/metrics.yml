@@ -45,3 +45,9 @@
     unit: "sessions"
     enabled: true
     descriptionColumnCount: "0"
+
+  - id: "cache hit ratio"
+    sql: "select rest.hit_ratio \"library cache hit ratio\" from (select sum(PINS) Executions, sum(RELOADS) cache_misses, round((1 - (sum(RELOADS) / sum(PINS))) * 100,2) hit_ratio from v$librarycache ) rest"
+    unit: "%"
+    enabled: true
+    descriptionColumnCount: "0"
