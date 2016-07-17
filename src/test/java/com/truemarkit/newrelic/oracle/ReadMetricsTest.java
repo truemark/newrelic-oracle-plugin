@@ -26,7 +26,7 @@ public class ReadMetricsTest {
 
 	@Test
 	public void readMetrics() throws Exception {
-		List<Metric> metrics = loadedMetrics.getMetrics(); //new OracleAgentFactory().readMetrics();
+		List<Metric> metrics = loadedMetrics.getMetrics();
 		log.info("Found [" + metrics.size() + "] metrics");
 	}
 
