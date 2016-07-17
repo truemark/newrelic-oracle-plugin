@@ -1,9 +1,9 @@
 package com.truemarkit.newrelic.oracle;
 
 import com.netradius.commons.lang.StringHelper;
-import com.newrelic.agent.deps.org.slf4j.Logger;
-import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,10 +75,6 @@ public class DatabaseUtil {
 		} catch (SQLException e) {
 			log.error("Error executing query: " + e.getMessage(), e);
 		}
-		// TODO I don't get this
-		Map<String, Map<String, Float>> finalResult = new HashMap<>();
-		finalResult.put(unit, results);
-//		return results;
 		return returnMetrics;
 	}
 

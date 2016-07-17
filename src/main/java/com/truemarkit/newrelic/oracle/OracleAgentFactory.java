@@ -1,13 +1,14 @@
 package com.truemarkit.newrelic.oracle;
 
 import com.netradius.commons.lang.StringHelper;
-import com.newrelic.agent.deps.org.slf4j.Logger;
-import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
-import com.newrelic.agent.deps.org.yaml.snakeyaml.Yaml;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.AgentFactory;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
-import com.truemarkit.newrelic.oracle.model.Metric;
+import com.truemarkit.newrelic.oracle.model.Metrics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -18,9 +19,13 @@ import java.util.Map;
  * @author Dilip S Sisodia
  * @author Erik R. Jensen
  */
+@Component
 public class OracleAgentFactory extends AgentFactory {
 
 	private static final Logger log = LoggerFactory.getLogger(OracleAgentFactory.class);
+
+	@Autowired
+	private Metrics metrics;
 
 	@Override
 	public Agent createConfiguredAgent(Map<String, Object> properties) throws ConfigurationException {
@@ -49,25 +54,6 @@ public class OracleAgentFactory extends AgentFactory {
 		if (StringHelper.isEmpty(password)) {
 			throw new ConfigurationException("password may not be empty");
 		}
-		return new OracleAgent(name, host, port, sid, serviceName, username, password, readMetrics());
+		return new OracleAgent(name, host, port, sid, serviceName, username, password, metrics.getMetrics());
 	}
-
-	@SuppressWarnings("unchecked")
-	public List<Metric> readMetrics() throws ConfigurationException {
-		Yaml y = new Yaml();
-		try (InputStream in = Main.class.getClass().getResourceAsStream("/metrics.yml")) {
-			Iterator<Object> lstObj = y.loadAll(in).iterator();
-			if (lstObj.hasNext()) {
-				List<Metric> metrics = (List<Metric>) lstObj.next();
-				if (log.isDebugEnabled()) {
-					log.debug("Found [" + metrics.size() + "] metrics");
-				}
-				return metrics;
-			}
-		} catch (Exception e) {
-			throw new ConfigurationException("Failed to read metrics: " + e.getMessage(), e);
-		}
-		throw new ConfigurationException("No metrics found");
-	}
-
 }
