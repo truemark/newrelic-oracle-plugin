@@ -1,1 +1,148 @@
-This space is reserved for plugin page.
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="UTF-8">
+	<title>newrelic-oracle-plugin</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script type="text/javascript"
+	        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<link type="text/css" rel="stylesheet"
+	      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-default  navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">
+				<img alt="Brand"
+				     src="https://truemark.atlassian.net/s/-volj38/100011/c/694a9805b3e5a8517419a58551513bff/_/jira-logo-scaled.png">
+			</a>
+		</div>
+		<div class="navbar-text navbar-right">
+			<ul class="nav nav-pills">
+				<li role="presentation"><a href="https://github.com/truemark/newrelic-oracle-plugin">GitHub
+					Repository</a></li>
+				<li role="presentation"><a href="https://truemark.atlassian.net/projects/NRORA/issues">Jira Project</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="container-fluid" style="margin-top: 10px;">
+	<div class="jumbotron" style="background-color: white">
+		<h2>New Relic Platform Oracle Plugin - Java</h2>
+		<h3>Requirements</h3>
+		<hr>
+		<div class="bg-info" style="padding: 10px">
+			<div class="underline"></div>
+			<div>
+				<b class="underline">The requirements for running this plugin are:</b>
+				<ul>
+					<li>A New Relic account. Sign up for a free account here</li>
+					<li>Java Runtime (JRE) environment Version 1.6 or later</li>
+					<li>A server running Oracle</li>
+					<li>Network access to New Relic</li>
+				</ul>
+			</div>
+		</div>
+		<h3>Installation</h3>
+		<hr>
+		<div class="bg-info" style="padding: 10px">
+			<b>This plugin can be installed as follows:</b>
+			<h4>Install Manually (Non-standard)</h4>
+			<div><b>Step 1 - Downloading and Extracting the Plugin</b>
+				<p>
+					<small>The latest version of the plugin can be downloaded here. Add the plugin.jar file to location
+						of
+						your choice.
+					</small>
+				</p>
+			</div>
+			<div><b>Step 2 - Configuring the Plugin</b>
+				<p>
+					<small>Check out the configuration information section for details on configuring your plugin.
+					</small>
+				</p>
+			</div>
+			<div><b>Step 3 - Running the Plugin</b>
+				<p>
+					<small>To run the plugin, execute the following command from a terminal or command window (assuming
+						Java
+						is installed and on your path):
+					</small>
+				<div>
+					<mark>java -Xmx128m -jar plugin.jar</mark>
+				</div>
+				</p>
+				<div>
+
+				</div>
+			</div>
+		</div>
+
+		<h3>Configuration Information</h3>
+		<hr>
+		<div style="padding: 10px;" class="bg-info">
+			<h4>Configuration Files</h4>
+				<div>
+					Configuration files needs to be setup in order to get the plugin running.
+				</div>
+			<p>
+				<div>
+					<p><strong>newrelic.json</strong> - Add your New Relic licence key to this file.</p>
+				</div>
+				<div class="bg-warning" style="margin-top: 10px; padding: 10px">
+					<span>
+						<mark>
+							<span>Example:</span></br>
+							<span style="padding-left: 40px;">{</span></br>
+							<span style="padding-left: 80px;">"license_key": "YOUR_LICENSE_KEY_HERE",</span></br>
+							<span style="padding-left: 80px;">"log_level": "debug",</span></br>
+							<span style="padding-left: 80px;">"log_file_path": "/var/logs/newrelic"</span></br>
+							<span style="padding-left: 40px;">}</span>
+						</mark>
+					</span>
+				</div>
+			</p>
+			<hr>
+			<p>
+				<div>
+					<p>
+						<strong>metrics.yml</strong> - Add array of metric details to file, this will contails the details
+						on what data you want to report.
+					</p>
+				</div>
+				<div class="bg-warning" style="margin-top: 10px; padding: 10px">
+					<mark>
+						<span>Example:</span></br>
+						<span style="padding-left: 40px;">- id: "METRIC_CATEGORY_NAME"</span></br>
+						<span style="padding-left: 40px;">sql: "SQL_TO_FETCH_DATA_TO_REPORT"</span></br>
+						<span style="padding-left: 40px;">unit: "UNIT_FOR_DATA"</span></br>
+						<span style="padding-left: 40px;">enabled: 'TRUE - "REPORT METRIC /FALSE - IGNORE METRIC</span></br>
+						<span style="padding-left: 40px;">descriptionColumnCount: "INITIAL COLUMNS FOR WHICH ADD NAME OF COLUMNS TO METRIC NAME"</span>
+					</mark>
+				</div>
+			</p>
+			<hr>
+			<p>
+				<div><p><strong>plugin.json</strong> - Add agent details in this file:</p></div>
+				<div class="bg-warning" style="margin-top: 10px; padding: 10px">
+				<mark>
+					<span>Example:</span></br>
+					<span style="padding-left: 40px;">{</span></br>
+					<span style="padding-left: 60px;">"agents": [</span></br>
+					<span style="padding-left: 80px;">{</span></br>
+					<span style="padding-left: 80px;">"name" : "Name_For_Agent",</span></br>
+					<span style="padding-left: 80px;">"host" : "Host_Address",</span></br>
+					<span style="padding-left: 80px;">"user" : "USERNAME",</span></br>
+					<span style="padding-left: 80px;">"password" : "PASSWORD"</span></br>
+					<span style="padding-left: 80px;">}</span></br>
+					<span style="padding-left: 60px;">]</span></br>
+					<span style="padding-left: 40px;">}</span></br>
+				</mark>
+			</div>
+			</p>
+	</div>
+</body>
+</html>
