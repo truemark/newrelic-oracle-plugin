@@ -43,5 +43,11 @@
   - id: "blocking sessions"
     sql: "select count(1) as \" \" from v$session s where s.blocking_session is not null and s.seconds_in_wait > 60"
     unit: "sessions"
+    enabled: false
+    descriptionColumnCount: "0"
+
+  - id: "recovery area space"
+    sql: "SELECT sum(u.PERCENT_SPACE_USED) as \"used space\", sum(u.PERCENT_SPACE_RECLAIMABLE) as \"reclaimable space\" FROM V$RECOVERY_AREA_USAGE u"
+    unit: "%"
     enabled: true
     descriptionColumnCount: "0"
