@@ -22,6 +22,18 @@ metrics:
       id: "tablespace_max_used"
       sql: "select max(round(((bytes - free_bytes) / maxbytes) * 100, 2)) as \" \" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
       unit: "%"
+      enabled: false
+      descriptionColumnCount: "0"
+    -
+      id: "tablespace_alerts"
+      sql: "select max(round(((bytes - free_bytes) / maxbytes) * 100, 2)) as \"tablespace_max_used_percent\", min(round((100 - ((bytes - free_bytes) / maxbytes) * 100), 2)) as \"tablespace_min_avail_percent\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
+      unit: "%"
+      enabled: true
+      descriptionColumnCount: "0"
+    -
+      id: "tablespace_alerts"
+      sql: "select max(bytes - free_bytes) as \"tablespace_max_used_bytes\", min(maxbytes - (bytes - free_bytes)) as \"tablespace_min_avail_bytes\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
+      unit: "bytes"
       enabled: true
       descriptionColumnCount: "0"
     -
@@ -46,5 +58,35 @@ metrics:
       id: "blocking sessions"
       sql: "select count(1) as \" \" from v$session s where s.blocking_session is not null and s.seconds_in_wait > 60"
       unit: "sessions"
+      enabled: true
+      descriptionColumnCount: "0"
+    -
+      id: "recovery area space"
+      sql: "SELECT sum(u.PERCENT_SPACE_USED) as \"used space\", sum(u.PERCENT_SPACE_RECLAIMABLE) as \"reclaimable space\" FROM V$RECOVERY_AREA_USAGE u"
+      unit: "%"
+      enabled: true
+      descriptionColumnCount: "0"
+    -
+      id: "cache hit ratio"
+      sql: "select ((1 - (sum(getmisses) / (sum(gets) + sum(getmisses))))) * 100 as \"hit rate\" from v$rowcache where gets + getmisses <> 0"
+      unit: "Hit Rate"
+      enabled: true
+      descriptionColumnCount: "0"
+    -
+      id: "cache hit ratio"
+      sql: "select rest.hr \"dictionary cache hit ratio\" from ( select sum(GETS), sum(GETMISSES), round((1 - (sum(GETMISSES) / sum(GETS))) * 100,2) hr from v$rowcache ) rest"
+      unit: "%"
+      enabled: true
+      descriptionColumnCount: "0"
+    -
+      id: "cache hit ratio"
+      sql: "select round(((1-(sum(decode(name,'physical reads', value,0))/(sum(decode(name, 'db block gets', value,0))+(sum(decode(name, 'consistent gets',value, 0))))))*100),2) \"buffer cache hit ratio\" from v$sysstat"
+      unit: "%"
+      enabled: true
+      descriptionColumnCount: "0"
+    -
+      id: "cache hit ratio"
+      sql: "select rest.hit_ratio \"library cache hit ratio\" from (select sum(PINS) Executions, sum(RELOADS) cache_misses, round((1 - (sum(RELOADS) / sum(PINS))) * 100,2) hit_ratio from v$librarycache ) rest"
+      unit: "%"
       enabled: true
       descriptionColumnCount: "0"

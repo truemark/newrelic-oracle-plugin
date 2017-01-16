@@ -1,12 +1,18 @@
 package com.truemarkit.newrelic.oracle;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netradius.commons.lang.StringHelper;
+import com.newrelic.agent.deps.org.slf4j.Logger;
+import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.pool.HikariPool;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -56,7 +62,15 @@ public class OracleAgent extends Agent {
 		config.setDriverClassName("oracle.jdbc.OracleDriver");
 		config.setInitializationFailFast(true);
 		config.setConnectionTestQuery("SELECT 1 FROM DUAL");
-		dataSource = new HikariDataSource(config);
+		try {
+			dataSource = new HikariDataSource(config);
+		} catch (HikariPool.PoolInitializationException ex) {
+			log.error("Error Initializing database pool. Error connecting to database: " + host + ":" +
+					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
+		} catch (Exception ex) {
+			log.error("Error connecting to database: " + host + ":" +
+					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
+		}
 
 		this.metricCategories = metricCategories;
 	}
