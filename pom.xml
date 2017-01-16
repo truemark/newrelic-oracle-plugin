@@ -106,6 +106,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<executable>true</executable>
+					<mainClass>com.truemarkit.newrelic.oracle.NewRelicOraclePluginApplication</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -128,7 +129,7 @@
 							<archive>
 								<manifest>
 									<addClasspath>true</addClasspath>
-									<mainClass>com.truemarkit.newrelic.oracle.Main</mainClass>
+									<mainClass>com.truemarkit.newrelic.oracle.NewRelicOraclePluginApplication</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>

@@ -1,11 +1,7 @@
 package com.truemarkit.newrelic.oracle;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netradius.commons.lang.StringHelper;
-import com.newrelic.agent.deps.org.slf4j.Logger;
-import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.Metric;
@@ -108,6 +104,7 @@ public class OracleAgent extends Agent {
 			if(data.getValue() == null) {
 				log.error("Can not report null value for key: " + data.getKey());
 			} else {
+				log.debug("Reporting metric: " + data.getKey() + "[" + data.getUnit() + "]");
 				reportMetric(data.getKey(),data.getUnit(), data.getValue());
 				count++;
 			}
