@@ -63,3 +63,9 @@
     unit: "%"
     enabled: true
     descriptionColumnCount: "0"
+
+  - id: "cache hit ratio"
+    sql: "select round(((1-(sum(decode(name,'physical reads', value,0))/(sum(decode(name, 'db block gets', value,0))+(sum(decode(name, 'consistent gets',value, 0))))))*100),2) \"buffer cache hit ratio\" from v$sysstat"
+    unit: "%"
+    enabled: true
+    descriptionColumnCount: "0"
