@@ -13,15 +13,15 @@
 				<include>readme*</include>
 				<include>LICENSE*</include>
 			</includes>
-			<outputDirectory>dist</outputDirectory>
+			<outputDirectory>.</outputDirectory>
 			<useDefaultExcludes>true</useDefaultExcludes>
 		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}/config</directory>
 			<includes>
-				<include>**.json</include>
+				<include>**.template.json</include>
 			</includes>
-			<outputDirectory>dist/config</outputDirectory>
+			<outputDirectory>./config</outputDirectory>
 			<useDefaultExcludes>true</useDefaultExcludes>
 		</fileSet>
 	</fileSets>
@@ -29,7 +29,14 @@
 		<file>
 			<source>${project.basedir}/target/${pom.artifactId}-${pom.version}.jar</source>
 			<destName>plugin.jar</destName>
-			<outputDirectory>dist</outputDirectory>
+			<outputDirectory>.</outputDirectory>
 		</file>
 	</files>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>/dependency-jars/</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
+			<scope>runtime</scope>
+		</dependencySet>
+	</dependencySets>
 </assembly>

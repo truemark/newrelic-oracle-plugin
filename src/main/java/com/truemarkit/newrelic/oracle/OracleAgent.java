@@ -110,6 +110,7 @@ public class OracleAgent extends Agent {
 				log.error("Can not report null value for key: " + data.getKey());
 			} else {
 				reportMetric(data.getKey(),data.getUnit(), data.getValue());
+				log.debug("key: " + data.getKey() + " : " + data.getValue() + data.getUnit());
 				count++;
 			}
 		}

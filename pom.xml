@@ -17,6 +17,7 @@
 		<!-- Plugin Versions (Alphabetical Order) -->
 		<maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		<maven-dependency-plugin.version>2.5.1</maven-dependency-plugin.version>
 
 		<!-- Dependency Versions (Alphabetical Order) -->
 		<findbugs.version>3.0.1</findbugs.version>
@@ -117,33 +118,57 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.truemarkit.newrelic.oracle.Main</mainClass>
+							<classpathPrefix>dependency-jars/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven-dependency-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeScope>runtime</includeScope>
+							<outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
-					<descriptors>
-						<descriptor>${project.basedir}/assembly.xml</descriptor>
-					</descriptors>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.truemarkit.newrelic.oracle.Main</mainClass>
+							<classpathPrefix>dependency-jars/</classpathPrefix>
+						</manifest>
+					</archive>
+					<descriptor>${project.basedir}/assembly.xml</descriptor>
+					<finalName>plugin</finalName>
+					<outputDirectory>dist</outputDirectory>
 				</configuration>
 				<executions>
 					<execution>
-						<id>jar-with-dependencies</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
-						<configuration>
-							<archive>
-								<manifest>
-									<addClasspath>true</addClasspath>
-									<mainClass>com.truemarkit.newrelic.oracle.Main</mainClass>
-								</manifest>
-							</archive>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
-							<finalName>plugin</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
