@@ -49,8 +49,43 @@
 		<h3>Installation</h3>
 		<hr>
 		<div class="bg-info" style="padding: 10px">
-			<b>This plugin can be installed as follows:</b>
-			<h4>Install Manually (Non-standard)</h4>
+			<h4> NPI Installation:</h4>
+			<div><b>This plugin can be installed with the New Relic Platform Installer (NPI). See the NPI install steps below.</b>
+				<p>
+
+					<small>Add below section to manifest.json(create file if not exists) file inside the config directory at your npi install location:</small>
+					<div class="bg-warning">
+					<span>
+						<code>
+							<br/>[{
+							<br/><span style="padding-left: 5%"> "guid": "com.truemarkit.newrelic.oracle",</span>
+							<br/><span style="padding-left: 5%">"download_url": "https://github.com/truemark/newrelic-oracle-plugin/raw/master/dist/plugin-dist.tar.gz",</span>
+							<br/><span style="padding-left: 5%">"publisher": "TrueMark",</span>
+							<br/><span style="padding-left: 5%">"version": "1.1.0",</span>
+							<br/><span style="padding-left: 5%">"installer_compatible": true,</span>
+							<br/><span style="padding-left: 5%">"implementation": "Java"</span>
+							<br/>}]
+						</code>
+						</span>
+					</div>
+				</p>
+			</div>
+			<div><b>Now run below command:</b>
+				<p>
+					<small>
+						<div class="bg-warning">
+					<span>
+					<code>
+						./npi install com.truemarkit.newrelic.oracle --untrusted</code>
+					</span>
+						</div>
+					</small>
+				</p>
+			</div>
+		</div>
+		<hr>
+		<div class="bg-info" style="padding: 10px">
+		<h4>Install Manually (Non-standard)</h4>
 			<div><b>Step 1 - Downloading and Extracting the Plugin</b>
 				<p>
 					<small>The latest version of the plugin can be downloaded <a href="https://github.com/truemark/newrelic-oracle-plugin">here</a>. Add the plugin.jar file to location
@@ -75,9 +110,6 @@
 					<mark>java -Xmx128m -jar plugin.jar</mark>
 				</div>
 				</p>
-				<div>
-
-				</div>
 			</div>
 		</div>
 
@@ -94,14 +126,15 @@
 				</div>
 				<div class="bg-warning" style="margin-top: 10px; padding: 10px">
 					<span>
-						<mark>
+						<code>
 							<span>Example:</span></br>
-							<span style="padding-left: 40px;">{</span></br>
-							<span style="padding-left: 80px;">"license_key": "YOUR_LICENSE_KEY_HERE",</span></br>
-							<span style="padding-left: 80px;">"log_level": "debug",</span></br>
-							<span style="padding-left: 80px;">"log_file_path": "/var/logs/newrelic"</span></br>
-							<span style="padding-left: 40px;">}</span>
-						</mark>
+							{
+							</br>"license_key": "YOUR_LICENSE_KEY_HERE"
+							</br>"log_level": "debug",
+							</br>"log_file_path": "/var/logs/newrelic"
+							</br>}
+
+						</code>
 					</span>
 				</div>
 			</p>
@@ -109,26 +142,31 @@
 			<p>
 				<div>
 					<p>
-						<strong>metrics.yml</strong> <small>- Add array of metric details to file, this will contails the details
-						on what data you want to report</small>.
+						<strong>metrics.yml</strong> <small>- This file will be required if you want to use some custom sql to report data to New Relic dashboard otherwise default metrics defined in the plugin will be used. </small>.
 					</p>
+					<p><small>array of metric details to file, this will contails the details on what data you want to report.</small>  </p>
 				</div>
 				<div class="bg-warning" style="margin-top: 10px; padding: 10px">
-					<mark>
-						<span>Example:</span></br>
-						<span style="padding-left: 40px;">- id: "METRIC_CATEGORY_NAME"</span></br>
-						<span style="padding-left: 40px;">sql: "SQL_TO_FETCH_DATA_TO_REPORT"</span></br>
-						<span style="padding-left: 40px;">unit: "UNIT_FOR_DATA"</span></br>
-						<span style="padding-left: 40px;">enabled: 'TRUE - "REPORT METRIC /FALSE - IGNORE METRIC</span></br>
-						<span style="padding-left: 40px;">descriptionColumnCount: "INITIAL COLUMNS FOR WHICH ADD NAME OF COLUMNS TO METRIC NAME"</span>
-					</mark>
+					<div>
+						<span>
+							<code>
+
+								<span>Example:</span></br>
+								<span style="padding-left: 5%">  - id: "METRIC_CATEGORY_NAME"</span>
+								</br><span style="padding-left: 6%">sql: "SQL_TO_FETCH_DATA_TO_REPORT"</span>
+								</br><span style="padding-left: 6%">unit: "UNIT_FOR_DATA"</span>
+								</br><span style="padding-left: 6%">enabled: TRUE - REPORT METRIC /FALSE - IGNORE METRIC</span>
+								</br><span style="padding-left: 6%">descriptionColumnCount: "integer value to add the sql column content to be part of metric name"</span>
+							</code>
+						</span>
+					</div>
 				</div>
 			</p>
 			<hr>
 			<p>
 				<div><p><strong>plugin.json</strong> <small>- Add agent/database connections details in this file:</small></p></div>
 				<div class="bg-warning" style="margin-top: 10px; padding: 10px">
-				<mark>
+				<code>
 					<span>Example:</span></br>
 					<span style="padding-left: 40px;">{</span></br>
 					<span style="padding-left: 60px;">"agents": [</span></br>
@@ -143,7 +181,7 @@
 					<span style="padding-left: 80px;">}</span></br>
 					<span style="padding-left: 60px;">]</span></br>
 					<span style="padding-left: 40px;">}</span></br>
-				</mark>
+				</code>
 			</div>
 			</p>
 	</div>
