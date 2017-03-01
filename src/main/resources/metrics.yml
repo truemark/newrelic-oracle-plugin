@@ -81,3 +81,9 @@
     unit: "%"
     enabled: true
     descriptionColumnCount: "0"
+
+  - id: "temp tablespace"
+    sql: "SELECT b.tablespace ||'-'|| a.sid||',-'||a.serial# AS tablespace_sid_serial, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM   gv$session a, gv$sort_usage b, gv$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr AND a.inst_id=b.inst_id AND a.inst_id=p.inst_id GROUP BY a.sid, a.serial#, a.inst_id, a.status, a.username, b.tablespace, a.program, a.sql_id ORDER BY b.tablespace, 2 desc"
+    unit: "MB"
+    enabled: true
+    descriptionColumnCount: "1"
