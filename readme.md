@@ -1,21 +1,37 @@
 # New Relic Platform Oracle Plugin - Java
-
-
-
+This plugin for oracle collects the key performance data for your oracle instance and reports the key metrics to
+NewRelic dashboard, set up the alerts and get notified immediately on critical conditions.
 ## Requirements
 
 The requirements for running this plugin are:
 
 - A New Relic account. Sign up for a free account [here](http://newrelic.com)
-- Java Runtime (JRE) environment Version 1.6 or later
+- Java Runtime (JRE) environment Version 1.8 or later
 - A server running Oracle
 - Network access to New Relic
 
 ## Installation
-#### NPI Installation:
+#### NPI Compatible Installation:
 This plugin can be installed with the New Relic Platform Installer (NPI). See the NPI install steps below.
 
-1) Add below section to manifest.json(create file if not exists) file inside the config directory at your npi install location:
+1) Install New Relic Plateform Installer(NPI)
+Please install the new relic plateform installer using command similar to:
+```
+LICENSE_KEY=YOUR_LICENSE_KEY_HERE bash -c "$(curl -sSL https://download.newrelic.com/npi/release/install-npi-linux-debian-x86.sh)"
+```
+Please select the appropriate version of npi tool based on your operating system from [here](https://docs.newrelic.com/docs/plugins/plugins-new-relic/installing-plugins/installing-npi-compatible-plugin#npi-os-version)
+
+2) Above command should install the npi tool to your system, output of above command should display the install location.
+the default install location is /Users/USERNAME/newrelic-npi, where USERNAME is your system username.
+
+3) Now navigate to directory(newrelic-npi) where npi tool is installed, you will find the config directory there, which
+ will contain the configuration information for your npi installation.
+ 
+4) create the manifest.json file inside config directory using below command:
+```
+vim config/manifest.json
+```
+and copy paste below content and save the file.
 ```
 [{
 
@@ -27,11 +43,19 @@ This plugin can be installed with the New Relic Platform Installer (NPI). See th
  "implementation": "Java"
 }]
 ```
-2) Now run below command:
+5) Now run below command to install the plugin:
 
 ```
     ./npi install com.truemarkit.newrelic.oracle --untrusted
 
+```
+
+Please follow the commandline to complete the configuration(check configuration section) and installation of plugin,
+select yes to set as background process if you want to run the plugin as a service.
+
+6) Now start the plugin using below command:
+```
+./npi start com.truemarkit.newrelic.oracle
 ```
 
 #### Install Manually (Non-standard)
