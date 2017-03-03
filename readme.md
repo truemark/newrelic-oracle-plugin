@@ -19,13 +19,16 @@ Please install the new relic plateform installer using command similar to:
 ```
 LICENSE_KEY=YOUR_LICENSE_KEY_HERE bash -c "$(curl -sSL https://download.newrelic.com/npi/release/install-npi-linux-debian-x86.sh)"
 ```
-Please select the appropriate version of npi tool based on your operating system from [here](https://docs.newrelic.com/docs/plugins/plugins-new-relic/installing-plugins/installing-npi-compatible-plugin#npi-os-version)
+ Please select the appropriate version of npi tool based on your operating system from [here](https://docs.newrelic.com/docs/plugins/plugins-new-relic/installing-plugins/installing-npi-compatible-plugin#npi-os-version)
 
 2) Above command should install the npi tool to your system, output of above command should display the install location.
 the default install location is /Users/USERNAME/newrelic-npi, where USERNAME is your system username.
 
 3) Now navigate to directory(newrelic-npi) where npi tool is installed, you will find the config directory there, which
  will contain the configuration information for your npi installation.
+ ```
+ cd /Users/USERNAME/newrelic-npi
+ ```
  
 4) create the manifest.json file inside config directory using below command:
 ```
