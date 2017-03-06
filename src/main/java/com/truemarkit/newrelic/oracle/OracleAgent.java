@@ -4,9 +4,8 @@ package com.truemarkit.newrelic.oracle;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netradius.commons.lang.StringHelper;
-import com.newrelic.agent.deps.org.slf4j.Logger;
-import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Agent;
+import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 import com.zaxxer.hikari.HikariConfig;
@@ -31,7 +30,7 @@ import static com.truemarkit.newrelic.oracle.DatabaseUtil.*;
 @EqualsAndHashCode(callSuper = true)
 public class OracleAgent extends Agent {
 
-	private static final Logger log = LoggerFactory.getLogger(OracleAgent.class);
+	private static final Logger log = Logger.getLogger(OracleAgent.class);
 
 	// This is used for testing
 //	private static final String GUID = "com.truemarkit.newrelic.oracletest";
@@ -98,7 +97,9 @@ public class OracleAgent extends Agent {
 				}
 			}
 		} catch (Exception e) {
-			log.error("Error gathering metrics: " + e.getMessage(), e);
+			log.error("Error on SID/Service url: " + dataSource.getJdbcUrl().substring(dataSource.getJdbcUrl()
+							.lastIndexOf("/"), dataSource.getJdbcUrl().length()));
+			log.error("Error gathering metrics: " + e.getMessage());
 		}
 		return resultMetrics;
 	}
