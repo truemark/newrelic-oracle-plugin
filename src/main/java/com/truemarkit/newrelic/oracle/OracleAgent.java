@@ -36,7 +36,7 @@ public class OracleAgent extends Agent {
 //	private static final String GUID = "com.truemarkit.newrelic.oracletest";
 	// This is used for production
 	private static final String GUID = "com.truemarkit.newrelic.oracle";
-	private static final String version = "1.1.0";
+	private static final String version = "1.1.1";
 
 	private HikariDataSource dataSource;
 
