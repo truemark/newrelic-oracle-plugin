@@ -1,9 +1,8 @@
 package com.truemarkit.newrelic.oracle;
 
-import com.newrelic.agent.deps.org.slf4j.Logger;
-import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.metrics.publish.Runner;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
+import com.newrelic.metrics.publish.util.Logger;
 
 /**
  * Main entry point for the plugin.
@@ -13,7 +12,7 @@ import com.newrelic.metrics.publish.configuration.ConfigurationException;
  */
 public class Main {
 
-	private static final Logger log = LoggerFactory.getLogger(Main.class);
+	private static final Logger log = Logger.getLogger(Main.class);
 
 	public static void main(String[] args) {
 		try {

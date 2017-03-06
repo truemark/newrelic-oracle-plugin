@@ -18,6 +18,7 @@
 		<maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>2.5.1</maven-dependency-plugin.version>
+		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 
 		<!-- Dependency Versions (Alphabetical Order) -->
 		<findbugs.version>3.0.1</findbugs.version>
@@ -119,6 +120,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>

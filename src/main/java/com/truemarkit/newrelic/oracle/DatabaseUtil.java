@@ -1,8 +1,7 @@
 package com.truemarkit.newrelic.oracle;
 
 import com.netradius.commons.lang.StringHelper;
-import com.newrelic.agent.deps.org.slf4j.Logger;
-import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
+import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
 
 import javax.annotation.Nonnull;
@@ -21,7 +20,7 @@ import java.util.Map;
  */
 public class DatabaseUtil {
 
-	private static final Logger log = LoggerFactory.getLogger(DatabaseUtil.class);
+	private static final Logger log = Logger.getLogger(DatabaseUtil.class);
 
 	@Nonnull
 	public static String getJdbcUrl(@Nonnull String host, @Nonnull String port,

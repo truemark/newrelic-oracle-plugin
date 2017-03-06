@@ -1,12 +1,11 @@
 package com.truemarkit.newrelic.oracle;
 
 import com.netradius.commons.lang.StringHelper;
-import com.newrelic.agent.deps.org.slf4j.Logger;
-import com.newrelic.agent.deps.org.slf4j.LoggerFactory;
 import com.newrelic.agent.deps.org.yaml.snakeyaml.Yaml;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.AgentFactory;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
+import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.Metric;
 
 import java.io.InputStream;
@@ -20,7 +19,7 @@ import java.util.Map;
  */
 public class OracleAgentFactory extends AgentFactory {
 
-	private static final Logger log = LoggerFactory.getLogger(OracleAgentFactory.class);
+	private static final Logger log = Logger.getLogger(OracleAgentFactory.class);
 
 	@Override
 	public Agent createConfiguredAgent(Map<String, Object> properties) throws ConfigurationException {
@@ -59,9 +58,7 @@ public class OracleAgentFactory extends AgentFactory {
 			Iterator<Object> lstObj = y.loadAll(in).iterator();
 			if (lstObj.hasNext()) {
 				List<Metric> metrics = (List<Metric>) lstObj.next();
-				if (log.isDebugEnabled()) {
-					log.debug("Found [" + metrics.size() + "] metrics");
-				}
+				log.debug("Found [" + metrics.size() + "] metrics");
 				return metrics;
 			}
 		} catch (Exception e) {
@@ -69,5 +66,4 @@ public class OracleAgentFactory extends AgentFactory {
 		}
 		throw new ConfigurationException("No metrics found");
 	}
-
 }
