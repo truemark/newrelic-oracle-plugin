@@ -49,7 +49,7 @@
   - id: "blocking sessions"
     sql: "select count(1) as \" \" from v$session s where s.blocking_session is not null and s.seconds_in_wait > 60"
     unit: "sessions"
-    enabled: false
+    enabled: true
     descriptionColumnCount: "0"
 
   - id: "recovery area space"
