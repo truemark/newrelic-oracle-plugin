@@ -16,50 +16,49 @@ This plugin can be installed with the New Relic Platform Installer (NPI). See th
 
 1) Install New Relic Plateform Installer(NPI)
 Please install the new relic plateform installer using command similar to:
-    ```
-    LICENSE_KEY=YOUR_LICENSE_KEY_HERE bash -c "$(curl -sSL https://download.newrelic.com/npi/release/install-npi-linux-debian-x86.sh)"
-    ```
-    Please select the appropriate version of npi tool based on your operating system from [here](https://docs.newrelic.com/docs/plugins/plugins-new-relic/installing-plugins/installing-npi-compatible-plugin#npi-os-version)
+```
+LICENSE_KEY=YOUR_LICENSE_KEY_HERE bash -c "$(curl -sSL https://download.newrelic.com/npi/release/install-npi-linux-debian-x86.sh)"
+```
+Please select the appropriate version of npi tool based on your operating system from [here](https://docs.newrelic.com/docs/plugins/plugins-new-relic/installing-plugins/installing-npi-compatible-plugin#npi-os-version)
 
 2) Above command should install the npi tool to your system, output of above command should display the install location.
 the default install location is /Users/USERNAME/newrelic-npi, where USERNAME is your system username.
 
 3) Now navigate to directory(newrelic-npi) where npi tool is installed, you will find the config directory there, which
  will contain the configuration information for your npi installation.
-     ```
-     cd /Users/USERNAME/newrelic-npi
-     ```
+```
+cd /Users/USERNAME/newrelic-npi
+```
  
 4) create the manifest.json file inside config directory using below command:
-    ```
-    vim config/manifest.json
-    ```
-    and copy paste below content and save the file.
-    ```
-    [{
-    
-     "guid": "com.truemarkit.newrelic.oracle",
-     "download_url": "https://github.com/truemark/newrelic-oracle-plugin/raw/master/dist/plugin-dist.tar.gz",
-     "publisher": "TrueMark",
-     "version": "1.1.0",
-     "installer_compatible": true,
-     "implementation": "Java"
-    }]
-    ```
-5) Now run below command to install the plugin:
+```
+vim config/manifest.json
+```
+and copy paste below content and save the file.
+```
+[{
 
-    ```
-        ./npi install com.truemarkit.newrelic.oracle --untrusted
-    
-    ```
+ "guid": "com.truemarkit.newrelic.oracle",
+ "download_url": "https://github.com/truemark/newrelic-oracle-plugin/raw/master/dist/plugin-dist.tar.gz",
+ "publisher": "TrueMark",
+ "version": "1.1.0",
+ "installer_compatible": true,
+ "implementation": "Java"
+}]
+```
+5) Now run below command to install the plugin:
+```
+    ./npi install com.truemarkit.newrelic.oracle --untrusted
+
+```
 
 Please follow the commandline to complete the configuration(check configuration section) and installation of plugin,
 select yes to set as background process if you want to run the plugin as a service.
 
 6) Now start the plugin using below command:
-    ```
-    ./npi start com.truemarkit.newrelic.oracle
-    ```
+```
+./npi start com.truemarkit.newrelic.oracle
+```
 
 #### Install Manually (Non-standard)
 
@@ -76,12 +75,13 @@ Check out the [configuration information](#configuration-information) section fo
 
 To run the plugin, execute the following command from a terminal or command window (assuming Java is installed and on your path):
 
-    ```
-        java -Xmx128m -jar plugin.jar
-    ```
+```
+    java -Xmx128m -jar plugin.jar
+```
 
 ## Updating Plugin
 Plugin can be updated to a newer version, when available, as below:
+ 
 1) You will receive a notification on New Relic dashboard when a newer version of plugin is available.
 2) You can check details about plugin version [here](https://rpm.newrelic.com/accounts/1370610/plugins/directory/518)
 3) Now navigate to directory(newrelic-npi) where npi tool is installed, you will find the config directory there, which
