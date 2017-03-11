@@ -83,7 +83,9 @@ To run the plugin, execute the following command from a terminal or command wind
 Plugin can be updated to a newer version, when available, as below:
  
 1) You will receive a notification on New Relic dashboard when a newer version of plugin is available.
+
 2) You can check details about plugin version [here](https://rpm.newrelic.com/accounts/1370610/plugins/directory/518)
+
 3) Now navigate to directory(newrelic-npi) where npi tool is installed, you will find the config directory there, which
 will contain the configuration information for your npi installation.
 ```
@@ -91,10 +93,12 @@ cd path_to_newrelic_install_directory
  
 Example: cd /Users/USERNAME/newrelic-npi
 ```
+
 4) Open the plugin manifest file (manifest.json) inside config directory
 ```
 vim config/manifest.json
 ```
+
 5) Update the version value for plugin to new version
 ```
 [{
@@ -107,6 +111,7 @@ vim config/manifest.json
  "implementation": "Java"
 }]
 ```
+
 6) Back up your configuration files to some other location
 ```
 cp plugins/com.truemarkit.newrelic.oracle/plugin/config/newrelic.json BACKUP_LOCATION
@@ -117,23 +122,28 @@ cp plugins/com.truemarkit.newrelic.oracle/plugin/config/plugin.json BACKUP_LOCAT
 ```
 ./npi remove-service com.truemarkit.newrelic.oracle
 ```
+
 8) Remove old plugin installation
 ```
 ./npi remove com.truemarkit.newrelic.oracle
 ```
+
 9) Reinstall plugin
 ```
 ./npi install com.truemarkit.newrelic.oracle --untrusted
 ```
+
 10) Stop the plugin service
 ```
 ./npi stop com.truemarkit.newrelic.oracle
 ```
+
 11) Update your configuration files from backup location
 ```
 cp BACKUP_LOCATION/newrelic.json plugins/com.truemarkit.newrelic.oracle/plugin/config/ 
 cp BACKUP_LOCATION/plugin.json plugins/com.truemarkit.newrelic.oracle/plugin/config/ 
 ```
+
 12) Re-start the plugin
 ```
 ./npi start com.truemarkit.newrelic.oracle
