@@ -63,9 +63,11 @@ public class OracleAgent extends Agent {
 		try {
 			dataSource = new HikariDataSource(config);
 		} catch (HikariPool.PoolInitializationException ex) {
+			log.error("Database connection error for component: " + this.name);
 			log.error("Error Initializing database pool. Error connecting to database: " + host + ":" +
 					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
 		} catch (Exception ex) {
+			log.error("Database connection error for component: " + this.name);
 			log.error("Error connecting to database: " + host + ":" +
 					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
 		}
@@ -97,8 +99,7 @@ public class OracleAgent extends Agent {
 				}
 			}
 		} catch (Exception e) {
-			log.error("Error on SID/Service url: " + dataSource.getJdbcUrl().substring(dataSource.getJdbcUrl()
-							.lastIndexOf("/"), dataSource.getJdbcUrl().length()));
+			log.error("Error getting data for component: " + this.name);
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
 		return resultMetrics;
