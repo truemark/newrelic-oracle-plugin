@@ -41,6 +41,15 @@ public class OracleAgent extends Agent {
 	private HikariDataSource dataSource;
 
 	private final String name;
+	private final String host;
+	private final String port;
+	private final String sid;
+	private final String serviceName;
+	private final String username;
+	private final String password;
+
+
+	private float downTime;
 
 	private List<Metric> metricCategories = new ArrayList<>();
 
@@ -48,29 +57,15 @@ public class OracleAgent extends Agent {
 			String serviceName, String username, String password, List<Metric> metricCategories) {
 		super(GUID, version);
 		this.name = name;
+		this.host = host;
+		this.port = port;
+		this.sid = sid;
+		this.serviceName = serviceName;
+		this.username = username;
+		this.password = password;
 
-		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl(getJdbcUrl(host, port, sid, serviceName));
-		config.setUsername(username);
-		config.setPassword(password);
-		config.setReadOnly(true);
-		config.setMinimumIdle(1);
-		config.setMaximumPoolSize(2);
-		config.setPoolName(name);
-		config.setDriverClassName("oracle.jdbc.OracleDriver");
-		config.setInitializationFailFast(true);
-		config.setConnectionTestQuery("SELECT 1 FROM DUAL");
-		try {
-			dataSource = new HikariDataSource(config);
-		} catch (HikariPool.PoolInitializationException ex) {
-			log.error("Database connection error for component: " + this.name);
-			log.error("Error Initializing database pool. Error connecting to database: " + host + ":" +
-					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
-		} catch (Exception ex) {
-			log.error("Database connection error for component: " + this.name);
-			log.error("Error connecting to database: " + host + ":" +
-					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
-		}
+		this.dataSource = getHikariDataSource(name, host, port, sid, serviceName, username, password);
+		this.downTime = 0;
 
 		// TODO I don't get this
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -91,7 +86,33 @@ public class OracleAgent extends Agent {
 	private List<ResultMetricData> gatherMetrics() {
 		List<Metric> categories = metricCategories; // Get current Metric Categories
 		List<ResultMetricData> resultMetrics = new ArrayList<>();
-		try (Connection conn = dataSource.getConnection()) {
+
+		if(this.dataSource == null) {
+			this.dataSource = getHikariDataSource(this.name, this.host, this.port, this.sid, this.serviceName,
+					this.username, this.password);
+		}
+		try (Connection conn = this.dataSource.getConnection()) {
+			if(getDatabaseStatus(conn)) {
+				resultMetrics.add(new ResultMetricData()
+						.setKey("database-down")
+						.setValue(calculateDowntimePercent(false))
+						.setUnit("%"));
+			} else {
+				resultMetrics.add(new ResultMetricData()
+						.setKey("database-down")
+						.setValue(calculateDowntimePercent(true))
+						.setUnit("%"));
+			}
+		} catch (Exception e) {
+			resultMetrics.add(new ResultMetricData()
+					.setKey("database-down")
+					.setValue(calculateDowntimePercent(true))
+					.setUnit("%"));
+			log.error("Error getting data for component: " + this.name);
+			log.error("Error gathering metrics: " + e.getMessage());
+		}
+
+		try (Connection conn = this.dataSource.getConnection()) {
 			for (Metric metric : categories) {
 				if (metric.isEnabled()) {
 					resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
@@ -117,5 +138,17 @@ public class OracleAgent extends Agent {
 			}
 		}
 		log.debug("Reported [" + count + "] metrics");
+	}
+
+	private float calculateDowntimePercent(boolean isDown) {
+		if(isDown) {
+			if(downTime < 5) {
+				this.downTime++;
+			}
+		}
+		else {
+			this.downTime = 0;
+		}
+		return this.downTime * 100 / 5;
 	}
 }
