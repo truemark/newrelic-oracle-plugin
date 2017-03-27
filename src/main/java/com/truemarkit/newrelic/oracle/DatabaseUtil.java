@@ -3,14 +3,15 @@ package com.truemarkit.newrelic.oracle;
 import com.netradius.commons.lang.StringHelper;
 import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.pool.HikariPool;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Contaoins database utility methods.
@@ -30,14 +31,41 @@ public class DatabaseUtil {
 				: "jdbc:oracle:thin:@" + host.trim() + ":" + port.trim() + ":" + sid.trim();
 	}
 
+	public static HikariDataSource getHikariDataSource(String name, String host, String port, String sid, String serviceName,
+												 String username, String password) {
+		HikariDataSource dataSource = null;
+		HikariConfig config = new HikariConfig();
+		config.setJdbcUrl(getJdbcUrl(host, port, sid, serviceName));
+		config.setUsername(username);
+		config.setPassword(password);
+		config.setReadOnly(true);
+		config.setMinimumIdle(1);
+		config.setMaximumPoolSize(2);
+		config.setPoolName(name);
+		config.setDriverClassName("oracle.jdbc.OracleDriver");
+		config.setInitializationFailFast(true);
+		config.setConnectionTestQuery("SELECT 1 FROM DUAL");
+		try {
+			dataSource = new HikariDataSource(config);
+		} catch (HikariPool.PoolInitializationException ex) {
+			log.error("Database connection error for component: " + name);
+			log.error("Error Initializing database pool. Error connecting to database: " + host + ": " +
+					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
+		} catch (Exception ex) {
+			log.error("Database connection error for component: " + name);
+			log.error("Error connecting to database: " + host + ": " +
+					(StringHelper.isEmpty(sid)? serviceName: sid) + ex.getMessage());
+		}
+		return dataSource;
+	}
+
 	@Nonnull
 	public static List<ResultMetricData> getQueryResult(@Nonnull Connection conn,
 			@Nonnull String query, @Nonnull String category, int descColumnCount, @Nonnull String unit) {
-		Map<String, Float> results = new HashMap<>();
 		List<ResultMetricData> returnMetrics = new ArrayList<>();
 
 		try(PreparedStatement statement = conn.prepareStatement(query);
-		    ResultSet rs = statement.executeQuery()) {
+			ResultSet rs = statement.executeQuery()) {
 			ResultSetMetaData metaData = rs.getMetaData();
 			while (rs.next()) {
 				for (int i = 1; i <= metaData.getColumnCount(); i++) { // use column names as the "key"
@@ -56,12 +84,10 @@ public class DatabaseUtil {
 						ResultMetricData data = new ResultMetricData();
 
 						if (value == null) {
-							results.put(key, -1.0f);
 							data.setKey(key);
 							data.setValue(-1.0f);
 							data.setUnit(unit);
 						} else {
-							results.put(key, translateStringToNumber(value));
 							data.setKey(key);
 							data.setValue(translateStringToNumber(value));
 							data.setUnit(unit);
@@ -74,11 +100,38 @@ public class DatabaseUtil {
 		} catch (SQLException e) {
 			log.error("Error executing query: " + e.getMessage(), e);
 		}
-		// TODO I don't get this
-		Map<String, Map<String, Float>> finalResult = new HashMap<>();
-		finalResult.put(unit, results);
-//		return results;
 		return returnMetrics;
+	}
+
+	@Nonnull
+	public static boolean getDatabaseStatus(@Nonnull Connection conn) {
+		String status = "";
+		String dbStatus = "";
+		String instanceName = "";
+		String query = "SELECT INSTANCE_NAME, STATUS, DATABASE_STATUS FROM V$INSTANCE";
+
+		try(PreparedStatement statement = conn.prepareStatement(query);
+			ResultSet rs = statement.executeQuery()) {
+			ResultSetMetaData metaData = rs.getMetaData();
+			while (rs.next()) {
+					status = rs.getString("STATUS");
+					dbStatus = rs.getString("DATABASE_STATUS");
+					instanceName = rs.getString("INSTANCE_NAME");
+			}
+		} catch (SQLException e) {
+			log.error("Error executing query: " + e.getMessage(), e);
+			return false;
+		}
+
+		if(StringHelper.isEmpty(status) || StringHelper.isEmpty(dbStatus) || StringHelper.isEmpty(instanceName)) {
+			return false;
+		} else {
+			if(status.equals("OPEN") && dbStatus.equals("ACTIVE")) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	private static float translateStringToNumber(@Nonnull String val) {
@@ -92,6 +145,4 @@ public class DatabaseUtil {
 		}
 		return 0.0f;
 	}
-
-
 }
