@@ -3,14 +3,11 @@ package com.truemarkit.newrelic.oracle;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netradius.commons.lang.StringHelper;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.Metric;
 import com.truemarkit.newrelic.oracle.model.ResultMetricData;
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import com.zaxxer.hikari.pool.HikariPool;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -33,7 +30,7 @@ public class OracleAgent extends Agent {
 	private static final Logger log = Logger.getLogger(OracleAgent.class);
 
 	// This is used for testing
-//	private static final String GUID = "com.truemarkit.newrelic.oracletest";
+	//	private static final String GUID = "com.truemarkit.newrelic.oracletest";
 	// This is used for production
 	private static final String GUID = "com.truemarkit.newrelic.oracle";
 	private static final String version = "1.1.1";
@@ -48,13 +45,14 @@ public class OracleAgent extends Agent {
 	private final String username;
 	private final String password;
 
+	List<ResultMetricData> lastMinuteMetrics = new ArrayList<>();
 
 	private float downTime;
 
 	private List<Metric> metricCategories = new ArrayList<>();
 
 	public OracleAgent(String name, String host, String port, String sid,
-			String serviceName, String username, String password, List<Metric> metricCategories) {
+						String serviceName, String username, String password, List<Metric> metricCategories) {
 		super(GUID, version);
 		this.name = name;
 		this.host = host;
@@ -69,7 +67,9 @@ public class OracleAgent extends Agent {
 
 		// TODO I don't get this
 		ObjectMapper objectMapper = new ObjectMapper();
-		this.metricCategories = objectMapper.convertValue(metricCategories, new TypeReference<List<Metric>>() {});
+		this.metricCategories = objectMapper.convertValue(metricCategories,
+				new TypeReference<List<Metric>>() {
+				});
 	}
 
 	@Override
@@ -79,20 +79,21 @@ public class OracleAgent extends Agent {
 
 	@Override
 	public void pollCycle() {
-		List<ResultMetricData> results = gatherMetrics(); // Gather defined metrics
-		reportMetrics(results); // Report Metrics to New Relic
+		// Report Metrics to New Relic
+		reportMetrics(this.lastMinuteMetrics);
+		this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
 	}
 
 	private List<ResultMetricData> gatherMetrics() {
 		List<Metric> categories = metricCategories; // Get current Metric Categories
 		List<ResultMetricData> resultMetrics = new ArrayList<>();
 
-		if(this.dataSource == null) {
+		if (this.dataSource == null) {
 			this.dataSource = getHikariDataSource(this.name, this.host, this.port, this.sid, this.serviceName,
 					this.username, this.password);
 		}
 		try (Connection conn = this.dataSource.getConnection()) {
-			if(getDatabaseStatus(conn)) {
+			if (getDatabaseStatus(conn)) {
 				resultMetrics.add(new ResultMetricData()
 						.setKey("database-down")
 						.setValue(calculateDowntimePercent(false))
@@ -128,11 +129,11 @@ public class OracleAgent extends Agent {
 
 	public void reportMetrics(List<ResultMetricData> results) {
 		int count = 0;
-		for (ResultMetricData data :results) {
-			if(data.getValue() == null) {
+		for (ResultMetricData data : results) {
+			if (data.getValue() == null) {
 				log.error("Can not report null value for key: " + data.getKey());
 			} else {
-				reportMetric(data.getKey(),data.getUnit(), data.getValue());
+				reportMetric(data.getKey(), data.getUnit(), data.getValue());
 				log.debug("key: " + data.getKey() + " : " + data.getValue() + data.getUnit());
 				count++;
 			}
@@ -141,12 +142,11 @@ public class OracleAgent extends Agent {
 	}
 
 	private float calculateDowntimePercent(boolean isDown) {
-		if(isDown) {
-			if(downTime < 5) {
+		if (isDown) {
+			if (this.downTime < 5) {
 				this.downTime++;
 			}
-		}
-		else {
+		} else {
 			this.downTime = 0;
 		}
 		return this.downTime * 100 / 5;
