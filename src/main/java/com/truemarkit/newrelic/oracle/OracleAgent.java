@@ -81,7 +81,11 @@ public class OracleAgent extends Agent {
 	public void pollCycle() {
 		// Report Metrics to New Relic
 		reportMetrics(this.lastMinuteMetrics);
-		this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
+		Runnable task = () -> {
+			this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
+		};
+		Thread thread = new Thread(task);
+		thread.run();
 	}
 
 	private List<ResultMetricData> gatherMetrics() {
