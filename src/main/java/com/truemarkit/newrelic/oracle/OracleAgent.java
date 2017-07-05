@@ -47,8 +47,6 @@ public class OracleAgent extends Agent {
 
 	List<ResultMetricData> lastMinuteMetrics = new ArrayList<>();
 
-	private float downTime;
-
 	private List<Metric> metricCategories = new ArrayList<>();
 
 	public OracleAgent(String name, String host, String port, String sid,
@@ -63,7 +61,6 @@ public class OracleAgent extends Agent {
 		this.password = password;
 
 		this.dataSource = getHikariDataSource(name, host, port, sid, serviceName, username, password);
-		this.downTime = 0;
 
 		// TODO I don't get this
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -79,10 +76,10 @@ public class OracleAgent extends Agent {
 
 	@Override
 	public void pollCycle() {
+		this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
 		// Report Metrics to New Relic
-		reportMetrics(this.lastMinuteMetrics);
-		Runnable task = () -> {
-			this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
+		Runnable task = ()-> {
+			reportMetrics(this.lastMinuteMetrics);
 		};
 		Thread thread = new Thread(task);
 		thread.run();
@@ -100,19 +97,19 @@ public class OracleAgent extends Agent {
 			if (getDatabaseStatus(conn)) {
 				resultMetrics.add(new ResultMetricData()
 						.setKey("database-down")
-						.setValue(calculateDowntimePercent(false))
-						.setUnit("%"));
+						.setValue(0f)
+						.setUnit("down"));
 			} else {
 				resultMetrics.add(new ResultMetricData()
 						.setKey("database-down")
-						.setValue(calculateDowntimePercent(true))
-						.setUnit("%"));
+						.setValue(1f)
+						.setUnit("down"));
 			}
 		} catch (Exception e) {
 			resultMetrics.add(new ResultMetricData()
 					.setKey("database-down")
-					.setValue(calculateDowntimePercent(true))
-					.setUnit("%"));
+					.setValue(1f)
+					.setUnit("down"));
 			log.error("Error getting data for component: " + this.name);
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
@@ -120,8 +117,12 @@ public class OracleAgent extends Agent {
 		try (Connection conn = this.dataSource.getConnection()) {
 			for (Metric metric : categories) {
 				if (metric.isEnabled()) {
-					resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
-							metric.getDescriptionColumnCount(), metric.getUnit()));
+					Runnable task = () -> {
+						resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
+								metric.getDescriptionColumnCount(), metric.getUnit()));
+					};
+					Thread thread = new Thread(task);
+					thread.run();
 				}
 			}
 		} catch (Exception e) {
@@ -143,16 +144,5 @@ public class OracleAgent extends Agent {
 			}
 		}
 		log.debug("Reported [" + count + "] metrics");
-	}
-
-	private float calculateDowntimePercent(boolean isDown) {
-		if (isDown) {
-			if (this.downTime < 5) {
-				this.downTime++;
-			}
-		} else {
-			this.downTime = 0;
-		}
-		return this.downTime * 100 / 5;
 	}
 }
