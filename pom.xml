@@ -7,6 +7,14 @@
 	<groupId>com.truemarkit.newrelic.oracle</groupId>
 	<artifactId>oracle-plugin</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+	<description>New Relic plugin to monitor oracle database instances.</description>
+	<name>oracle-plugin</name>
+	<developers>
+		<developer>
+			<email>dsisodia@netradius.com</email>
+			<name>Dilip Singh Sisodia</name>
+		</developer>
+	</developers>
 
 	<properties>
 		<!-- Build Settings -->
@@ -15,10 +23,12 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Plugin Versions (Alphabetical Order) -->
+		<deb-maven-plugin.version>1.1</deb-maven-plugin.version>
 		<maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 		<maven-dependency-plugin.version>2.5.1</maven-dependency-plugin.version>
 		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+		<rpm-maven-plugin.version>2.0.1</rpm-maven-plugin.version>
 
 		<!-- Dependency Versions (Alphabetical Order) -->
 		<findbugs.version>3.0.1</findbugs.version>
@@ -173,6 +183,91 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>rpm-maven-plugin</artifactId>
+				<version>${rpm-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>generate-rpm</id>
+						<goals>
+							<goal>attached-rpm</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<group>dev</group>
+					<description>New Relic Oracle Plugin</description>
+					<copyright>2017, TrueMark</copyright>
+					<mappings>
+						<mapping>
+							<directory>/dependency-jars/</directory>
+							<dependency/>
+						</mapping>
+						<mapping>
+							<directory>/</directory>
+							<artifact>
+								<!--<classifiers>-->
+								<!--<classifier>${pom.artifactId}-${pom.version}.jar</classifier>-->
+								<!--</classifiers>-->
+							</artifact>
+						</mapping>
+						<mapping>
+							<directory>/config</directory>
+							<configuration>true</configuration>
+							<sources>
+								<source>
+									<location>${project.basedir}/config/newrelic.template.json</location>
+									<destination>newrelic.json</destination>
+								</source>
+								<source>
+									<location>${project.basedir}/config/plugin.template.json</location>
+									<destination>plugin.json</destination>
+								</source>
+							</sources>
+						</mapping>
+					</mappings>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.aerse.maven</groupId>
+				<artifactId>deb-maven-plugin</artifactId>
+				<version>${deb-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<unixUserId>user</unixUserId>
+					<unixGroupId>sudo</unixGroupId>
+					<osDependencies>
+					</osDependencies>
+					<javaServiceWrapper>true</javaServiceWrapper>
+					<fileSets>
+						<fileSet>
+							<source>${basedir}/config/newrelic.template.json</source>
+							<target>/config</target>
+						</fileSet>
+						<fileSet>
+							<source>${basedir}/config/plugin.template.json</source>
+							<target>/config</target>
+						</fileSet>
+						<fileSet>
+							<source>${project.build.directory}/${pom.artifactId}-${pom.version}.jar</source>
+							<target>/plugin.jar</target>
+						</fileSet>
+						<fileSet>
+							<source>${project.build.directory}/dependency-jars</source>
+							<target>/dependency-jars/</target>
+						</fileSet>
+					</fileSets>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
