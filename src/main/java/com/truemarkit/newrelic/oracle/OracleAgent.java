@@ -50,7 +50,7 @@ public class OracleAgent extends Agent {
 	private List<Metric> metricCategories = new ArrayList<>();
 
 	public OracleAgent(String name, String host, String port, String sid,
-						String serviceName, String username, String password, List<Metric> metricCategories) {
+	                   String serviceName, String username, String password, List<Metric> metricCategories) {
 		super(GUID, version);
 		this.name = name;
 		this.host = host;
@@ -76,19 +76,16 @@ public class OracleAgent extends Agent {
 
 	@Override
 	public void pollCycle() {
+		reportMetrics(this.lastMinuteMetrics);
 		this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
-		// Report Metrics to New Relic
-		Runnable task = ()-> {
-			reportMetrics(this.lastMinuteMetrics);
-		};
-		Thread thread = new Thread(task);
-		thread.run();
 	}
 
 	private List<ResultMetricData> gatherMetrics() {
 		List<Metric> categories = metricCategories; // Get current Metric Categories
 		List<ResultMetricData> resultMetrics = new ArrayList<>();
 
+//		ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
+//		Runnable dbStatustask = () -> {
 		if (this.dataSource == null) {
 			this.dataSource = getHikariDataSource(this.name, this.host, this.port, this.sid, this.serviceName,
 					this.username, this.password);
@@ -113,34 +110,46 @@ public class OracleAgent extends Agent {
 			log.error("Error getting data for component: " + this.name);
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
+//		};
 
+//		executorService.execute(dbStatustask);
 		try (Connection conn = this.dataSource.getConnection()) {
+
 			for (Metric metric : categories) {
 				if (metric.isEnabled()) {
-					Runnable task = () -> {
-						resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
-								metric.getDescriptionColumnCount(), metric.getUnit()));
-					};
-					Thread thread = new Thread(task);
-					thread.run();
+//					Runnable task = () -> {
+					resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
+							metric.getDescriptionColumnCount(), metric.getUnit()));
+
+//					};
+//					executorService.execute(task);
 				}
 			}
 		} catch (Exception e) {
 			log.error("Error getting data for component: " + this.name);
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
+
+//		executorService.shutdown();
+//		while (!executorService.isTerminated() || !executorService.isShutdown()){}
 		return resultMetrics;
 	}
 
 	public void reportMetrics(List<ResultMetricData> results) {
 		int count = 0;
 		for (ResultMetricData data : results) {
-			if (data.getValue() == null) {
-				log.error("Can not report null value for key: " + data.getKey());
-			} else {
-				reportMetric(data.getKey(), data.getUnit(), data.getValue());
-				log.debug("key: " + data.getKey() + " : " + data.getValue() + data.getUnit());
-				count++;
+			try {
+				if (data != null) {
+					if (data.getValue() == null) {
+						log.error("Can not report null value for key: " + data.getKey());
+					} else {
+						reportMetric(data.getKey(), data.getUnit(), data.getValue());
+						log.debug("key: ", data.getKey(), data.getValue(), data.getUnit());
+						count++;
+					}
+				}
+			} catch (Exception ex) {
+				log.error("Error reporting metrics: " + ex.getMessage());
 			}
 		}
 		log.debug("Reported [" + count + "] metrics");
