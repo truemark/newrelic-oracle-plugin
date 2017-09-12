@@ -76,16 +76,14 @@ public class OracleAgent extends Agent {
 
 	@Override
 	public void pollCycle() {
-		reportMetrics(this.lastMinuteMetrics);
 		this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
+		reportMetrics(this.lastMinuteMetrics);
 	}
 
 	private List<ResultMetricData> gatherMetrics() {
 		List<Metric> categories = metricCategories; // Get current Metric Categories
 		List<ResultMetricData> resultMetrics = new ArrayList<>();
 
-//		ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
-//		Runnable dbStatustask = () -> {
 		if (this.dataSource == null) {
 			this.dataSource = getHikariDataSource(this.name, this.host, this.port, this.sid, this.serviceName,
 					this.username, this.password);
@@ -110,19 +108,12 @@ public class OracleAgent extends Agent {
 			log.error("Error getting data for component: " + this.name);
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
-//		};
-
-//		executorService.execute(dbStatustask);
 		try (Connection conn = this.dataSource.getConnection()) {
 
 			for (Metric metric : categories) {
 				if (metric.isEnabled()) {
-//					Runnable task = () -> {
 					resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
 							metric.getDescriptionColumnCount(), metric.getUnit()));
-
-//					};
-//					executorService.execute(task);
 				}
 			}
 		} catch (Exception e) {
@@ -130,8 +121,6 @@ public class OracleAgent extends Agent {
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
 
-//		executorService.shutdown();
-//		while (!executorService.isTerminated() || !executorService.isShutdown()){}
 		return resultMetrics;
 	}
 
