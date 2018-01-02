@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class ResultMetricData {
-	String key;
-	String unit;
-	Float value;
+  String key;
+  String unit;
+  Float value;
 }

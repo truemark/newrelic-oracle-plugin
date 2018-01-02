@@ -12,16 +12,16 @@ import com.newrelic.metrics.publish.util.Logger;
  */
 public class Main {
 
-	private static final Logger log = Logger.getLogger(Main.class);
+  private static final Logger log = Logger.getLogger(Main.class);
 
-	public static void main(String[] args) {
-		try {
-			Runner runner = new Runner();
-			runner.add(new OracleAgentFactory());
-			runner.setupAndRun();
-		} catch (ConfigurationException e) {
-			log.error("Error starting plugin: " + e.getMessage(), e);
-			System.exit(1);
-		}
-	}
+  public static void main(String[] args) {
+    try {
+      Runner runner = new Runner();
+      runner.add(new OracleAgentFactory());
+      runner.setupAndRun();
+    } catch (ConfigurationException e) {
+      log.error("Error starting plugin: " + e.getMessage(), e);
+      System.exit(1);
+    }
+  }
 }

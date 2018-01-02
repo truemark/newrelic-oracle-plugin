@@ -1,0 +1,87 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          newrelic_plugin_com.truemarkit.newrelic.oracle
+# Required-Start:    $syslog $remote_fs
+# Required-Stop:     $syslog $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: New Relic 'com.truemarkit.newrelic.oracle' Plugin
+# Description:       Controls the New Relic 'com.truemarkit.newrelic.oracle' Plugin
+### END INIT INFO
+
+DESC="New Relic com.truemarkit.newrelic.oracle Plugin Daemon"
+NAME=newrelic_plugin_com.truemarkit.newrelic.oracle
+VERSION=1.1.1
+DAEMONDIR="/var/log/oracle-plugin"
+PIDFILE=/var/run/oracle-plugin/$NAME.pid
+
+
+
+get_pid() {
+  cat "$PIDFILE"
+}
+
+is_running() {
+  [ -f "$PIDFILE" ] && ps `get_pid` > /dev/null 2>&1
+}
+
+start() {
+  if is_running; then
+    echo "Already Started $NAME"
+  else
+    echo "Starting $NAME"
+    cd "$DAEMONDIR"
+    # Test permissions before starting the service, so you do not have
+    # a rogue process on systems that do not prompt for passwd (AWS)
+    touch $PIDFILE || return 1
+    sudo -u user java -Xmx128m "-Dnewrelic.platform.config.dir=/usr/share/oracle-plugin/lib/config" -jar "/usr/share/java/oracle-plugin.jar" >> $DAEMONDIR/daemon.log 2>&1 &
+    echo "$!" > $PIDFILE
+  fi
+}
+
+status() {
+  if is_running; then
+    echo "$NAME $VERSION is running"
+  else
+    echo "$NAME $VERSION is stopped"
+    exit 1
+  fi
+}
+
+stop() {
+  if is_running; then
+    echo "Stopping $NAME"
+    kill `get_pid`
+  else
+    echo "$NAME was not running"
+  fi
+}
+
+restart() {
+  stop
+  sleep 1
+  start
+}
+
+
+case "${1}" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  restart)
+    restart
+    ;;
+  *)
+    echo "Usage: ${0} {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0                                                                                                                                                      84,1          Bot

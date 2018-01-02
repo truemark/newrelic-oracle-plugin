@@ -14,10 +14,10 @@ import java.util.List;
 @Slf4j
 public class ReadMetricsTest {
 
-	@Test
-	public void readMetrics() throws Exception {
-		List<Metric> metrics = new OracleAgentFactory().readMetrics();
-		log.info("Found [" + metrics.size() + "] metrics");
-	}
+  @Test
+  public void readMetrics() throws Exception {
+    List<Metric> metrics = new OracleAgentFactory().readMetrics();
+    log.info("Found [" + metrics.size() + "] metrics");
+  }
 
 }

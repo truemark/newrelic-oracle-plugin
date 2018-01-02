@@ -2,9 +2,10 @@ package com.truemarkit.newrelic.oracle;
 
 import org.junit.Test;
 
-import static com.truemarkit.newrelic.oracle.DatabaseUtil.*;
+import static com.truemarkit.newrelic.oracle.DatabaseUtil.getJdbcUrl;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Unit tests for DatabaseUtil.
@@ -13,16 +14,16 @@ import static org.hamcrest.Matchers.*;
  */
 public class DatabaseUtilTest {
 
-	@Test
-	public void testSid() {
-		assertThat("jdbc:oracle:thin:@localhost:1521:xe", is(equalTo(getJdbcUrl("localhost", "1521", "xe", null))));
-		assertThat("jdbc:oracle:thin:@localhost:1521:xe", is(equalTo(getJdbcUrl("localhost", "1521", "xe", ""))));
-	}
+  @Test
+  public void testSid() {
+    assertThat("jdbc:oracle:thin:@localhost:1521:xe", is(equalTo(getJdbcUrl("localhost", "1521", "xe", null))));
+    assertThat("jdbc:oracle:thin:@localhost:1521:xe", is(equalTo(getJdbcUrl("localhost", "1521", "xe", ""))));
+  }
 
-	@Test
-	public void testServiceName() {
-		assertThat("jdbc:oracle:thin:@//localhost:1521/xe", is(equalTo(getJdbcUrl("localhost", "1521", null, "xe"))));
-		assertThat("jdbc:oracle:thin:@//localhost:1521/xe", is(equalTo(getJdbcUrl("localhost", "1521", "", "xe"))));
-	}
+  @Test
+  public void testServiceName() {
+    assertThat("jdbc:oracle:thin:@//localhost:1521/xe", is(equalTo(getJdbcUrl("localhost", "1521", null, "xe"))));
+    assertThat("jdbc:oracle:thin:@//localhost:1521/xe", is(equalTo(getJdbcUrl("localhost", "1521", "", "xe"))));
+  }
 
 }
