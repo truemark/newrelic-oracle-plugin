@@ -205,19 +205,21 @@
                     <targetOS>linux</targetOS>
                     <mappings>
                         <mapping>
-                            <directory>/dependency-jars/</directory>
+                            <directory>/usr/share/oracle-plugin/lib/dependency-jars</directory>
                             <dependency/>
                         </mapping>
                         <mapping>
-                            <directory>/</directory>
-                            <artifact>
-                                <!--<classifiers>-->
-                                <!--<classifier>${pom.artifactId}-${pom.version}.jar</classifier>-->
-                                <!--</classifiers>-->
-                            </artifact>
+                            <directory>/usr/share/oracle-plugin/lib</directory>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/${project.artifactId}-${project.version}.jar
+                                    </location>
+                                    <destination>oracle-plugin.jar</destination>
+                                </source>
+                            </sources>
                         </mapping>
                         <mapping>
-                            <directory>/config</directory>
+                            <directory>/usr/share/oracle-plugin/lib/config</directory>
                             <configuration>true</configuration>
                             <sources>
                                 <source>
@@ -231,6 +233,31 @@
                                     <destination>plugin.json</destination>
                                 </source>
                             </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/var/log/oracle-plugin</directory>
+                            <filemode>750</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                        </mapping>
+                        <mapping>
+                            <directory>/var/run/oracle-plugin</directory>
+                            <filemode>750</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                        </mapping>
+                        <mapping>
+                            <directory>/etc/init.d</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <sources>
+                                <source>
+                                    <location>${basedir}/src/rpm/init.d/oracle-plugin</location>
+                                    <destination>oracle-plugin</destination>
+                                </source>
+                            </sources>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
                         </mapping>
                     </mappings>
                 </configuration>

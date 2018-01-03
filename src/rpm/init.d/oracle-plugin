@@ -35,8 +35,7 @@ start() {
     # Test permissions before starting the service, so you do not have
     # a rogue process on systems that do not prompt for passwd (AWS)
     touch $PIDFILE || return 1
-    sudo -u user java -Xmx128m "-Dnewrelic.platform.config.dir=/usr/share/oracle-plugin/lib/config" -jar "/usr/share/java/oracle-plugin.jar" >> $DAEMONDIR/daemon.log 2>&1 &
-    echo "$!" > $PIDFILE
+    sudo -u user java -Xmx128m "-Dnewrelic.platform.config.dir=/usr/share/oracle-plugin/lib/config" -jar "/usr/share/oracle-plugin/lib/oracle-plugin.jar" >> $DAEMONDIR/daemon.log 2>&1 & echo "$!" > $PIDFILE
   fi
 }
 
