@@ -1,0 +1,9 @@
+Package: [[name]]
+Version: [[version]]
+Section: java
+Priority: standard
+Architecture: all
+Maintainer: Dilip Singh Sisodia <dsisodia@netradius.com>
+Depends: service-wrapper
+Description: [[name]]
+ [[description]]

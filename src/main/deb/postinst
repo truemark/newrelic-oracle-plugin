@@ -1,0 +1,17 @@
+#!/bin/bash -e
+USER_HOME=`echo ~user`
+
+case "$1" in
+        configure)
+        chown -R user:sudo $USER_HOME/oracle-plugin
+        chmod -R 750  $USER_HOME/oracle-plugin
+;;
+esac
+if [ -x "/etc/init.d/oracle-plugin" ]; then
+        update-rc.d oracle-plugin defaults >/dev/null
+        if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+                invoke-rc.d oracle-plugin start || true
+        else
+                /etc/init.d/oracle-plugin start || true
+        fi
+fi

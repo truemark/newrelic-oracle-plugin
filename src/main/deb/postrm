@@ -1,0 +1,18 @@
+#!/bin/bash -e
+if [ "$1" = "purge" ] ; then
+        update-rc.d oracle-plugin remove >/dev/null || true
+fi
+
+USER_HOME=`echo ~user`
+
+case "$1" in
+        purge|remove)
+                rm -R $USER_HOME/oracle-plugin
+        ;;
+        upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        ;;
+        *)
+                echo "$0 called with unknown argument \`$1'" >&2
+                exit 1
+        ;;
+esac
