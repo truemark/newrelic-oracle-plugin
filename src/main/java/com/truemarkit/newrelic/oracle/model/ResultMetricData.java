@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
+ * Holds metric data.
+ *
  * @author Dilip S Sisodia
  */
 @Data

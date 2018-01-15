@@ -16,14 +16,18 @@ public class DatabaseUtilTest {
 
   @Test
   public void testSid() {
-    assertThat("jdbc:oracle:thin:@localhost:1521:xe", is(equalTo(getJdbcUrl("localhost", "1521", "xe", null))));
-    assertThat("jdbc:oracle:thin:@localhost:1521:xe", is(equalTo(getJdbcUrl("localhost", "1521", "xe", ""))));
+    assertThat("jdbc:oracle:thin:@localhost:1521:xe",
+        is(equalTo(getJdbcUrl("localhost", "1521", "xe", null))));
+    assertThat("jdbc:oracle:thin:@localhost:1521:xe",
+        is(equalTo(getJdbcUrl("localhost", "1521", "xe", ""))));
   }
 
   @Test
   public void testServiceName() {
-    assertThat("jdbc:oracle:thin:@//localhost:1521/xe", is(equalTo(getJdbcUrl("localhost", "1521", null, "xe"))));
-    assertThat("jdbc:oracle:thin:@//localhost:1521/xe", is(equalTo(getJdbcUrl("localhost", "1521", "", "xe"))));
+    assertThat("jdbc:oracle:thin:@//localhost:1521/xe",
+        is(equalTo(getJdbcUrl("localhost", "1521", null, "xe"))));
+    assertThat("jdbc:oracle:thin:@//localhost:1521/xe",
+        is(equalTo(getJdbcUrl("localhost", "1521", "", "xe"))));
   }
 
 }

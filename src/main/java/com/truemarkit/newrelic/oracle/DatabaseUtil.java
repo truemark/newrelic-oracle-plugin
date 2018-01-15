@@ -35,7 +35,8 @@ public class DatabaseUtil {
         : "jdbc:oracle:thin:@" + host.trim() + ":" + port.trim() + ":" + sid.trim();
   }
 
-  public static HikariDataSource getHikariDataSource(String name, String host, String port, String sid, String serviceName,
+  public static HikariDataSource getHikariDataSource(String name, String host, String port,
+                                                     String sid, String serviceName,
                                                      String username, String password) {
     HikariDataSource dataSource = null;
     HikariConfig config = new HikariConfig();
@@ -53,19 +54,22 @@ public class DatabaseUtil {
       dataSource = new HikariDataSource(config);
     } catch (HikariPool.PoolInitializationException ex) {
       log.error("Database connection error for component: " + name);
-      log.error("Error Initializing database pool. Error connecting to database: " + host + ": " +
-          (StringHelper.isEmpty(sid) ? serviceName : sid) + ex.getMessage());
+      log.error("Error Initializing database pool. Error connecting to database: "
+          + host + ": " + (StringHelper.isEmpty(sid) ? serviceName : sid) + ex.getMessage());
     } catch (Exception ex) {
       log.error("Database connection error for component: " + name);
-      log.error("Error connecting to database: " + host + ": " +
-          (StringHelper.isEmpty(sid) ? serviceName : sid) + ex.getMessage());
+      log.error("Error connecting to database: "
+          + host + ": " + (StringHelper.isEmpty(sid) ? serviceName : sid) + ex.getMessage());
     }
     return dataSource;
   }
 
   @Nonnull
   public static List<ResultMetricData> getQueryResult(@Nonnull Connection conn,
-                                                      @Nonnull String query, @Nonnull String category, int descColumnCount, @Nonnull String unit) {
+                                                      @Nonnull String query,
+                                                      @Nonnull String category,
+                                                      int descColumnCount,
+                                                      @Nonnull String unit) {
     List<ResultMetricData> returnMetrics = new ArrayList<>();
 
     try (PreparedStatement statement = conn.prepareStatement(query);
@@ -127,7 +131,8 @@ public class DatabaseUtil {
       return false;
     }
 
-    if (StringHelper.isEmpty(status) || StringHelper.isEmpty(dbStatus) || StringHelper.isEmpty(instanceName)) {
+    if (StringHelper.isEmpty(status) || StringHelper.isEmpty(dbStatus)
+        || StringHelper.isEmpty(instanceName)) {
       return false;
     } else {
       if (status.equals("OPEN") && dbStatus.equals("ACTIVE")) {

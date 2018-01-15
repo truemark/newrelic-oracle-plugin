@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Factory class for creating agent.
+ *
  * @author Dilip S Sisodia
  * @author Erik R. Jensen
  */

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
+ * Holds information about metric to be reported.
+ *
  * @author Dilip S Sisodia
  */
 @Data

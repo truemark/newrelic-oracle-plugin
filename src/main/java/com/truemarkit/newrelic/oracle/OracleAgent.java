@@ -1,6 +1,5 @@
 package com.truemarkit.newrelic.oracle;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newrelic.metrics.publish.Agent;
@@ -21,6 +20,8 @@ import static com.truemarkit.newrelic.oracle.DatabaseUtil.getHikariDataSource;
 import static com.truemarkit.newrelic.oracle.DatabaseUtil.getQueryResult;
 
 /**
+ * Plugin agent to trigger collection of metrics and reporting to newrelic.
+ *
  * @author Dilip S Sisodia
  * @author Erik R. jensen
  */
@@ -32,7 +33,7 @@ public class OracleAgent extends Agent {
   private static final Logger log = Logger.getLogger(OracleAgent.class);
 
   // This is used for testing
-  //	private static final String GUID = "com.truemarkit.newrelic.oracletest";
+  // private static final String GUID = "com.truemarkit.newrelic.oracletest";
   // This is used for production
   private static final String GUID = "com.truemarkit.newrelic.oracle";
   private static final String version = "1.1.1";
@@ -48,7 +49,8 @@ public class OracleAgent extends Agent {
   private List<Metric> metricCategories = new ArrayList<>();
 
   public OracleAgent(String name, String host, String port, String sid,
-                     String serviceName, String username, String password, List<Metric> metricCategories) {
+                     String serviceName, String username, String password,
+                     List<Metric> metricCategories) {
     super(GUID, version);
     this.name = name;
     this.host = host;
@@ -88,8 +90,8 @@ public class OracleAgent extends Agent {
     List<ResultMetricData> resultMetrics = new ArrayList<>();
 
     if (this.dataSource == null) {
-      this.dataSource = getHikariDataSource(this.name, this.host, this.port, this.sid, this.serviceName,
-          this.username, this.password);
+      this.dataSource = getHikariDataSource(this.name, this.host, this.port, this.sid,
+          this.serviceName, this.username, this.password);
     }
     try (Connection conn = this.dataSource.getConnection()) {
       if (getDatabaseStatus(conn)) {

@@ -25,12 +25,15 @@
         <!-- Plugin Versions (Alphabetical Order) -->
         <deb-maven-plugin.version>1.4</deb-maven-plugin.version>
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
+        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>2.5.1</maven-dependency-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
 
         <!-- Dependency Versions (Alphabetical Order) -->
+        <checkstyle-config.version>0.0.2</checkstyle-config.version>
+        <checkstyle-puppycrawl-config.version>8.1</checkstyle-puppycrawl-config.version>
         <findbugs.version>3.0.1</findbugs.version>
         <hikaricp.version>2.4.5</hikaricp.version>
         <jackson.version>2.3.3</jackson.version>
@@ -212,7 +215,8 @@
                             <directory>/usr/share/oracle-plugin/lib</directory>
                             <sources>
                                 <source>
-                                    <location>${project.build.directory}/${project.artifactId}-${project.version}.jar
+                                    <location>
+                                        ${project.build.directory}/${project.artifactId}-${project.version}.jar
                                     </location>
                                     <destination>oracle-plugin.jar</destination>
                                 </source>
@@ -350,6 +354,39 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <configLocation>netradius_checks.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <sourceDirectory>${project.basedir}/src/</sourceDirectory>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.netradius</groupId>
+                        <artifactId>checkstyle-config</artifactId>
+                        <version>${checkstyle-config.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle-puppycrawl-config.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
