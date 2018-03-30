@@ -1,12 +1,12 @@
 package com.truemarkit.newrelic.oracle;
 
 import com.netradius.commons.lang.StringHelper;
-import com.newrelic.agent.deps.org.yaml.snakeyaml.Yaml;
 import com.newrelic.metrics.publish.Agent;
 import com.newrelic.metrics.publish.AgentFactory;
 import com.newrelic.metrics.publish.configuration.ConfigurationException;
 import com.newrelic.metrics.publish.util.Logger;
 import com.truemarkit.newrelic.oracle.model.Metric;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
 import java.util.Iterator;

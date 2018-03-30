@@ -50,7 +50,7 @@ public class OracleAgent extends Agent {
 	private List<Metric> metricCategories = new ArrayList<>();
 
 	public OracleAgent(String name, String host, String port, String sid,
-						String serviceName, String username, String password, List<Metric> metricCategories) {
+	                   String serviceName, String username, String password, List<Metric> metricCategories) {
 		super(GUID, version);
 		this.name = name;
 		this.host = host;
@@ -77,12 +77,7 @@ public class OracleAgent extends Agent {
 	@Override
 	public void pollCycle() {
 		this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
-		// Report Metrics to New Relic
-		Runnable task = ()-> {
-			reportMetrics(this.lastMinuteMetrics);
-		};
-		Thread thread = new Thread(task);
-		thread.run();
+		reportMetrics(this.lastMinuteMetrics);
 	}
 
 	private List<ResultMetricData> gatherMetrics() {
@@ -113,34 +108,37 @@ public class OracleAgent extends Agent {
 			log.error("Error getting data for component: " + this.name);
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
-
 		try (Connection conn = this.dataSource.getConnection()) {
+
 			for (Metric metric : categories) {
 				if (metric.isEnabled()) {
-					Runnable task = () -> {
-						resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
-								metric.getDescriptionColumnCount(), metric.getUnit()));
-					};
-					Thread thread = new Thread(task);
-					thread.run();
+					resultMetrics.addAll(getQueryResult(conn, metric.getSql(), metric.getId(),
+							metric.getDescriptionColumnCount(), metric.getUnit()));
 				}
 			}
 		} catch (Exception e) {
 			log.error("Error getting data for component: " + this.name);
 			log.error("Error gathering metrics: " + e.getMessage());
 		}
+
 		return resultMetrics;
 	}
 
 	public void reportMetrics(List<ResultMetricData> results) {
 		int count = 0;
 		for (ResultMetricData data : results) {
-			if (data.getValue() == null) {
-				log.error("Can not report null value for key: " + data.getKey());
-			} else {
-				reportMetric(data.getKey(), data.getUnit(), data.getValue());
-				log.debug("key: " + data.getKey() + " : " + data.getValue() + data.getUnit());
-				count++;
+			try {
+				if (data != null) {
+					if (data.getValue() == null) {
+						log.error("Can not report null value for key: " + data.getKey());
+					} else {
+						reportMetric(data.getKey(), data.getUnit(), data.getValue());
+						log.debug("key: ", data.getKey(), data.getValue(), data.getUnit());
+						count++;
+					}
+				}
+			} catch (Exception ex) {
+				log.error("Error reporting metrics: " + ex.getMessage());
 			}
 		}
 		log.debug("Reported [" + count + "] metrics");
