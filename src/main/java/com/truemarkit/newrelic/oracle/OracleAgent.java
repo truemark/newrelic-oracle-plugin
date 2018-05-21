@@ -152,7 +152,9 @@ public class OracleAgent extends Agent {
       log.error("Error gathering metrics: " + e.getMessage());
     }
 
-    resultMetrics.addAll(getDaysToFullMetrics(resultMetrics));
+    if (Boolean.getBoolean(this.apiConfiguration.get("pluginDataApiKey"))) {
+      resultMetrics.addAll(getDaysToFullMetrics(resultMetrics));
+    }
     return resultMetrics;
   }
 
