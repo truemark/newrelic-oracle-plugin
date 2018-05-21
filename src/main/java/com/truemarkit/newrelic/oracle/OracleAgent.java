@@ -87,16 +87,21 @@ public class OracleAgent extends Agent {
     this.apiConfiguration = apiConfiguration;
     // TODO I don't get this
     ObjectMapper objectMapper = new ObjectMapper();
-    this.metricCategories = objectMapper.convertValue(metricCategories,
-        new TypeReference<List<Metric>>() {
-        });
-    this.pluginDataApiClient = new PluginDataApiClient(
-        this.apiConfiguration.get("pluginDataApiKey"));
-    try {
-      this.pluginId = pluginDataApiClient.getPluginId();
-      this.componentId = pluginDataApiClient.getComponentId(this.pluginId, this.name);
-    } catch (IOException ex) {
-      log.error("Error fetching tablespace used history data from new relic. " + ex.getMessage());
+    this.metricCategories = objectMapper.convertValue(
+        metricCategories,
+        new TypeReference<List<Metric>>() {});
+
+    if (Boolean.parseBoolean(this.apiConfiguration.get("reportTablespaceDaysToFull"))) {
+      this.pluginDataApiClient = new PluginDataApiClient(
+          this.apiConfiguration.get("pluginDataApiKey"));
+      try {
+        this.pluginId = pluginDataApiClient.getPluginId();
+        this.componentId = pluginDataApiClient.getComponentId(this.pluginId, this.name);
+      } catch (IOException ex) {
+        log.error("Error fetching tablespace used history data from new relic. " + ex.getMessage());
+      }
+    } else {
+      this.pluginDataApiClient = null;
     }
   }
 
@@ -152,7 +157,8 @@ public class OracleAgent extends Agent {
       log.error("Error gathering metrics: " + e.getMessage());
     }
 
-    if (Boolean.getBoolean(this.apiConfiguration.get("pluginDataApiKey"))) {
+    if (Boolean.parseBoolean(this.apiConfiguration.get("reportTablespaceDaysToFull"))
+        && this.pluginDataApiClient != null) {
       resultMetrics.addAll(getDaysToFullMetrics(resultMetrics));
     }
     return resultMetrics;
