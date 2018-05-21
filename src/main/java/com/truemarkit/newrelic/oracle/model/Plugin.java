@@ -2,18 +2,19 @@ package com.truemarkit.newrelic.oracle.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
- * Holds data for metrics defined in metric.json config file.
+ * Holds data for new relic plugin.
  *
  * @author Dilip S Sisodia
  */
 @Data
+@Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Metric {
+public class Plugin {
   private String id;
-  private String sql;
-  private String unit;
-  private boolean enabled;
-  private Integer descriptionColumnCount;
+  private String name;
+  private String guid;
+  private String publisher;
 }
