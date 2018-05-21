@@ -112,7 +112,7 @@ public class OracleAgentFactory extends AgentFactory {
       }
 
     } catch (ConfigurationException e) {
-      throw new ConfigurationException("'metric_categories' could not be found in the "
+      throw new ConfigurationException("configuration key 'plugin' could not be found in the "
           + "'plugin.json' configuration file");
     }
     return apiConfiguration;
