@@ -2,18 +2,17 @@ package com.truemarkit.newrelic.oracle.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
- * Holds data for metrics defined in metric.json config file.
+ * Holds data for new relic Component.
  *
  * @author Dilip S Sisodia
  */
 @Data
+@Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Metric {
+public class Component {
   private String id;
-  private String sql;
-  private String unit;
-  private boolean enabled;
-  private Integer descriptionColumnCount;
+  private String name;
 }

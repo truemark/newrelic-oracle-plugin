@@ -1,4 +1,8 @@
 {
+  "plugin": {
+    "pluginDataApiKey": "YOUR_PLUGIN_API_KEY",
+    "reportTablespaceDaysToFull": true
+  },
   "agents": [
     {
       "name": "Localhost",
