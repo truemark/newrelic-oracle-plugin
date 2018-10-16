@@ -122,7 +122,7 @@ public class DatabaseUtil {
 
     } catch (SQLSyntaxErrorException ex) {
       if (ex.getErrorCode() == 942) {
-        log.error(ex.getMessage() + ", please ensure that <view/table> exists and that "
+        log.error("Please ensure that " + tablename + " exists and that "
             + conn.getMetaData().getUserName() + "@"
             + conn.getMetaData().getURL().replaceAll("jdbc:oracle:thin:@//", "")
             + " has read access to it.", ex);
