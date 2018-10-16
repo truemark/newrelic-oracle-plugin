@@ -3,87 +3,102 @@
     unit: "%"
     enabled: true
     descriptionColumnCount: "1"
+    databaseTable: "dba_free_space, dba_data_files"
 
   - id: "tablespace"
     sql: "select files.tablespace_name, maxbytes as \"size/bytes\", bytes - free_bytes as \"used/bytes\", maxbytes - (bytes - free_bytes) as \"avail/bytes\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name ) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
     unit: "BYTES"
     enabled: true
     descriptionColumnCount: "1"
+    databaseTable: "dba_free_space, dba_data_files"
 
   - id: "tablespace"
     sql: "select max(round(((bytes - free_bytes) / maxbytes) * 100, 2)) as \"tablespace_max_used_percent\", min(round((100 - ((bytes - free_bytes) / maxbytes) * 100), 2)) as \"tablespace_min_avail_percent\", max(bytes - free_bytes) as \"tablespace_max_used_bytes\", min(maxbytes - (bytes - free_bytes)) as \"tablespace_min_avail_bytes\" from (select tablespace_name, sum(bytes) as bytes, sum(maxbytes) as maxbytes from (select tablespace_name, bytes, case autoextensible when 'YES' then maxbytes else bytes end as maxbytes from dba_data_files) group by tablespace_name) files, (select tablespace_name, sum(bytes) as free_bytes from dba_free_space group by tablespace_name) free where files.tablespace_name = free.tablespace_name order by free.tablespace_name"
     unit: "%"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "dba_free_space, dba_data_files"
 
   - id: "sessions"
     sql: "select current_utilization as \"count\", max_utilization as \"highwater mark\", limit_value as \"limit\" from v$resource_limit where resource_name = 'sessions'"
     unit: "sessions"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$resource_limit"
 
   - id: "processes"
     sql: "select current_utilization as \"count\", max_utilization as \"highwater mark\", limit_value as \"limit\" from v$resource_limit where resource_name = 'processes'"
     unit: "processes"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$resource_limit"
 
   - id: "blocking session list"
     sql: "select sid || ',' || serial# || ' blocked by ' || s.blocking_session as \"session\" , s.seconds_in_wait as \" \" from v$session s where blocking_session is not null and s.seconds_in_wait > 60 order by s.seconds_in_wait"
     unit: "sec"
     enabled: false
     descriptionColumnCount: "1"
+    databaseTable: "v$session"
 
   - id: "blocking sessions"
     sql: "select count(1) as \" \" from v$session s where s.blocking_session is not null and s.seconds_in_wait > 60"
     unit: "sessions"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$session"
 
   - id: "recovery area space"
     sql: "SELECT sum(u.PERCENT_SPACE_USED) as \"used space\", sum(u.PERCENT_SPACE_RECLAIMABLE) as \"reclaimable space\" FROM V$RECOVERY_AREA_USAGE u"
     unit: "%"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "V$RECOVERY_AREA_USAGE"
 
   - id: "cache hit ratio"
     sql: "select ((1 - (sum(getmisses) / (sum(gets) + sum(getmisses))))) * 100 as \"hit rate\" from v$rowcache where gets + getmisses <> 0"
     unit: "Hit Rate"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$rowcache"
 
   - id: "cache hit ratio"
     sql: "select rest.hr \"dictionary cache hit ratio\" from ( select sum(GETS), sum(GETMISSES), round((1 - (sum(GETMISSES) / sum(GETS))) * 100,2) hr from v$rowcache ) rest"
     unit: "%"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$rowcache"
 
   - id: "cache hit ratio"
     sql: "select round(((1-(sum(decode(name,'physical reads', value,0))/(sum(decode(name, 'db block gets', value,0))+(sum(decode(name, 'consistent gets',value, 0))))))*100),2) \"buffer cache hit ratio\" from v$sysstat"
     unit: "%"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$sysstat"
 
   - id: "cache hit ratio"
     sql: "select rest.hit_ratio \"library cache hit ratio\" from (select sum(PINS) Executions, sum(RELOADS) cache_misses, round((1 - (sum(RELOADS) / sum(PINS))) * 100,2) hit_ratio from v$librarycache ) rest"
     unit: "%"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$librarycache"
 
   - id: "temp tablespace"
-    sql: "SELECT b.tablespace ||'-'|| a.sid||',-'||a.serial# AS tablespace_sid_serial, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM   gv$session a, gv$sort_usage b, gv$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr AND a.inst_id=b.inst_id AND a.inst_id=p.inst_id GROUP BY a.sid, a.serial#, a.inst_id, a.status, a.username, b.tablespace, a.program, a.sql_id ORDER BY b.tablespace, 2 desc"
+    sql: "SELECT b.tablespace ||'-'|| a.sid||',-'||a.serial# AS tablespace_sid_serial, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM gv$session a, gv$sort_usage b, gv$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr AND a.inst_id=b.inst_id AND a.inst_id=p.inst_id GROUP BY a.sid, a.serial#, a.inst_id, a.status, a.username, b.tablespace, a.program, a.sql_id ORDER BY b.tablespace, 2 desc"
     unit: "MB"
     enabled: false
     descriptionColumnCount: "1"
+    databaseTable: "gv$session, gv$sort_usage, gv$parameter"
 
   - id: "shared pool"
     sql: "select sum(rt.fm) \"total free bytes\" from (select name, bytes fm from v$sgastat where name='free memory') rt"
     unit: "bytes"
     enabled: true
     descriptionColumnCount: "0"
+    databaseTable: "v$sgastat"
 
   - id: "shared pool"
     sql: "select pool as \"pool\", bytes as \" \" from v$sgastat where name like '%free memory%'"
     unit: "bytes"
     enabled: true
     descriptionColumnCount: "1"
+    databaseTable: "v$sgastat"
