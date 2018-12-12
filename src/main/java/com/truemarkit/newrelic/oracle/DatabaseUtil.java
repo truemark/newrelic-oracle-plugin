@@ -53,11 +53,11 @@ public class DatabaseUtil {
     config.setPassword(password);
     config.setReadOnly(true);
     config.setMinimumIdle(1);
-    config.setMaximumPoolSize(3);
+    config.setMaximumPoolSize(10);
     config.setPoolName(name);
     config.setDriverClassName("oracle.jdbc.OracleDriver");
     config.setInitializationFailFast(true);
-    config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(15L));
+    config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(10L));
     config.setConnectionTestQuery("SELECT 1 FROM DUAL");
     try {
       dataSource = new HikariDataSource(config);
