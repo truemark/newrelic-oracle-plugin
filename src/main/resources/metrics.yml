@@ -82,13 +82,6 @@
     descriptionColumnCount: "0"
     databaseTable: "v$librarycache"
 
-  - id: "temp tablespace"
-    sql: "SELECT b.tablespace ||'-'|| a.sid||',-'||a.serial# AS tablespace_sid_serial, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM gv$session a, gv$sort_usage b, gv$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr AND a.inst_id=b.inst_id AND a.inst_id=p.inst_id GROUP BY a.sid, a.serial#, a.inst_id, a.status, a.username, b.tablespace, a.program, a.sql_id ORDER BY b.tablespace, 2 desc"
-    unit: "MB"
-    enabled: false
-    descriptionColumnCount: "1"
-    databaseTable: "gv$session, gv$sort_usage, gv$parameter"
-
   - id: "shared pool"
     sql: "select sum(rt.fm) \"total free bytes\" from (select name, bytes fm from v$sgastat where name='free memory') rt"
     unit: "bytes"
@@ -102,3 +95,24 @@
     enabled: true
     descriptionColumnCount: "1"
     databaseTable: "v$sgastat"
+
+  - id: "temp tablespace/sid-serial"
+    sql: "SELECT b.tablespace ||'-'|| a.sid||',-'||a.serial# AS tablespace_sid_serial, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM v$session a, v$sort_usage b, v$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr GROUP BY a.sid, a.serial#, a.status, a.username, b.tablespace, a.program, a.sql_id HAVING sum((b.blocks*p.value)/1024/1024) > 100 ORDER BY b.tablespace, 2 desc"
+    unit: "MB"
+    enabled: true
+    descriptionColumnCount: "1"
+    databaseTable: "v$session, v$sort_usage, v$parameter"
+
+  - id: "temp tablespace/user"
+    sql: "SELECT b.tablespace, CASE WHEN a.USERNAME IS NULL THEN 'NULL_USER' ELSE a.USERNAME END as \"USERNAME\", ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM v$session a, v$sort_usage b, v$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr GROUP BY a.USERNAME, b.tablespace ORDER BY 3 DESC"
+    unit: "MB"
+    enabled: true
+    descriptionColumnCount: "2"
+    databaseTable: "v$session, v$sort_usage, v$parameter"
+
+  - id: "temp tablespace/tablespace"
+    sql: "SELECT b.tablespace, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM v$session a, v$sort_usage b, v$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr GROUP BY b.tablespace ORDER BY 2 DESC"
+    unit: "MB"
+    enabled: true
+    descriptionColumnCount: "1"
+    databaseTable: "v$session, v$sort_usage, v$parameter"

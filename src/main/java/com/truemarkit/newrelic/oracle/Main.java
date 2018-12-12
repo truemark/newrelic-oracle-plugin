@@ -60,7 +60,7 @@ public class Main {
                 Context runnerContext = (Context) runnerContextField.get(o);
                 Request request = runnerContext.createRequest();
 
-                ExecutorService executorService = Executors.newWorkStealingPool(10);
+                ExecutorService executorService = Executors.newWorkStealingPool(25);
 
                 Field componentAgentsField = Runner.class.getDeclaredField("componentAgents");
                 componentAgentsField.setAccessible(true);
@@ -81,7 +81,7 @@ public class Main {
                 }
                  try {
                    executorService.shutdown();
-                   executorService.awaitTermination(40, TimeUnit.SECONDS);
+                   executorService.awaitTermination(50, TimeUnit.SECONDS);
                  }
                  catch (InterruptedException e) {
                  	log.error("tasks interrupted");
