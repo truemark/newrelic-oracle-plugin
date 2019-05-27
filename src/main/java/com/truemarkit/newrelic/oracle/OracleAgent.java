@@ -78,8 +78,7 @@ public class OracleAgent extends Agent {
 
   @Override
   public void pollCycle() {
-    this.lastMinuteMetrics = gatherMetrics(); // Gather defined metrics
-    reportMetrics(this.lastMinuteMetrics);
+    reportMetrics(gatherMetrics());
   }
 
   private List<ResultMetricData> gatherMetrics() {
@@ -131,24 +130,26 @@ public class OracleAgent extends Agent {
 
   public void reportMetrics(List<ResultMetricData> results) {
     int count = 0;
-    for (ResultMetricData data : results) {
-      try {
-        if (data != null) {
-          if (data.getValue() == null) {
-            log.error("Can not report null value for key: " + data.getKey());
-          } else {
-            reportMetric(data.getKey(), data.getUnit(), data.getValue());
-            log.debug("key: ",
-                data.getKey(),
-                " value: ",
-                data.getValue(),
-                " unit: ",
-                data.getUnit());
-            count++;
+    if(results != null) {
+      for (ResultMetricData data : results) {
+        try {
+          if (data != null) {
+            if (data.getValue() == null) {
+              log.error("Can not report null value for key: " + data.getKey());
+            } else {
+//            reportMetric(data.getKey(), data.getUnit(), data.getValue());
+              log.debug("key: ",
+                  data.getKey(),
+                  " value: ",
+                  data.getValue(),
+                  " unit: ",
+                  data.getUnit());
+              count++;
+            }
           }
+        } catch (Exception ex) {
+          log.error("Error reporting metrics: " + ex.getMessage());
         }
-      } catch (Exception ex) {
-        log.error("Error reporting metrics: " + ex.getMessage());
       }
     }
     log.debug("Reported [" + count + "] metrics");

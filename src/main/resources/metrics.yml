@@ -83,10 +83,10 @@
     databaseTable: "v$librarycache"
 
   - id: "temp tablespace"
-    sql: "SELECT b.tablespace ||'-'|| a.sid||',-'||a.serial# AS tablespace_sid_serial, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM gv$session a, gv$sort_usage b, gv$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr AND a.inst_id=b.inst_id AND a.inst_id=p.inst_id GROUP BY a.sid, a.serial#, a.inst_id, a.status, a.username, b.tablespace, a.program, a.sql_id ORDER BY b.tablespace, 2 desc"
+    sql: "SELECT b.tablespace,a.status, a.username, ROUND(sum((b.blocks*p.value)/1024/1024),2) as \" \" FROM v$session a, v$sort_usage b, v$parameter p WHERE p.name = 'db_block_size' AND a.saddr = b.session_addr GROUP BY a.status, a.username, b.tablespace ORDER BY b.tablespace, 2 desc"
     unit: "MB"
-    enabled: false
-    descriptionColumnCount: "1"
+    enabled: true
+    descriptionColumnCount: "3"
     databaseTable: "gv$session, gv$sort_usage, gv$parameter"
 
   - id: "shared pool"

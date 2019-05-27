@@ -21,7 +21,7 @@
 		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
 
 		<!-- Dependency Versions (Alphabetical Order) -->
-		<cglib.version>2.2</cglib.version>
+		<cglib.version>3.2.12</cglib.version>
 		<commons-codec.version>1.9</commons-codec.version>
 		<findbugs.version>3.0.1</findbugs.version>
 		<hikaricp.version>2.4.5</hikaricp.version>
