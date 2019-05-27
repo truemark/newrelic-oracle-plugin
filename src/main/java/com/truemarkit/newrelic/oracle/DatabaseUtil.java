@@ -57,7 +57,7 @@ public class DatabaseUtil {
     config.setPoolName(name);
     config.setDriverClassName("oracle.jdbc.OracleDriver");
     config.setInitializationFailFast(true);
-    config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(10L));
+    config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(15L));
     config.setConnectionTestQuery("SELECT 1 FROM DUAL");
     try {
       dataSource = new HikariDataSource(config);
