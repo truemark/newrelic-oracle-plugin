@@ -54,7 +54,7 @@ public class OracleAgentFactory extends AgentFactory {
 	@SuppressWarnings("unchecked")
 	public List<Metric> readMetrics() throws ConfigurationException {
 		Yaml y = new Yaml();
-		try (InputStream in = Main.class.getClass().getResourceAsStream("/metrics.yml")) {
+		try (InputStream in = Main.class.getResourceAsStream("/metrics.yml")) {
 			Iterator<Object> lstObj = y.loadAll(in).iterator();
 			if (lstObj.hasNext()) {
 				List<Metric> metrics = (List<Metric>) lstObj.next();
