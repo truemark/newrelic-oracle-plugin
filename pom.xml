@@ -35,7 +35,7 @@
 		<ojdbc.version>11.2.0.3.0</ojdbc.version>
 		<public-metrics.version>2.0.1</public-metrics.version>
 		<slf4j-api.version>1.7.6</slf4j-api.version>
-		<snakeyaml.version>1.17</snakeyaml.version>
+		<snakeyaml.version>1.26</snakeyaml.version>
 		<validation.version>1.1.0.Final</validation.version>
 	</properties>
 
