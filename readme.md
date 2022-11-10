@@ -1,4 +1,7 @@
 # New Relic Platform Oracle Plugin - Java
+
+**WARNING** This project is deprecated and no longer maintained!!
+
 This plugin for oracle collects the key performance data for your oracle instance and reports the key metrics to
 NewRelic dashboard, set up the alerts and get notified immediately on critical conditions.
 ## Requirements
